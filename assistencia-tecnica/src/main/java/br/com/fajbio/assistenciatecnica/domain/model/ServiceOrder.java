@@ -1,5 +1,8 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EAssignmentStrategy;
+import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
+import br.com.fajbio.assistenciatecnica.domain.enums.EProductLine;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -55,6 +58,36 @@ public class ServiceOrder {
     @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "origem", nullable = false, length = 20)
+    private EOrigin origin;
+
+    @Column(name = "requester_name", nullable = false, length = 100)
+    private String requesterName;
+
+    @Column(name = "requester_email", nullable = false, length = 200)
+    private String requesterEmail;
+
+    @Column(name = "requester_company_name", nullable = false, length = 100)
+    private String requesterCompanyName;
+
+    @Column(name = "requester_document", nullable = false, length = 20)
+    private String requesterDocument;
+
+    @Column(name = "requester_address", nullable = false, length = 200)
+    private String requesterAddress;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_line", nullable = false, length = 20)
+    private EProductLine productLine;
+
+    @Column(name = "claimed_at")
+    private LocalDateTime claimedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "assignment_strategy", nullable = false, length = 20)
+    private EAssignmentStrategy assignmentStrategy;
+
     @OneToMany(mappedBy = "serviceOrder")
     private List<SoStatusHistory> statusHistory;
 
@@ -63,4 +96,7 @@ public class ServiceOrder {
 
     @OneToMany(mappedBy = "serviceOrder")
     private List<WorkOrder> workOrders;
+
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
 }

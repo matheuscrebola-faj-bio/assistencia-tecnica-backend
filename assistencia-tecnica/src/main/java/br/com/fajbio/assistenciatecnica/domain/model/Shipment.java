@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EShipmentMode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,11 +39,9 @@ public class Shipment {
     @Column(name = "data_envio")
     private LocalDate dataEnvio;
 
-    @Column(name = "data_entrega_estimada")
-    private LocalDate dataEntregaEstimada;
-
-    @Column(name = "data_entrega")
-    private LocalDate dataEntrega;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mode", nullable = false, length = 20)
+    private EShipmentMode mode;
 
     @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShipmentEvent> events;

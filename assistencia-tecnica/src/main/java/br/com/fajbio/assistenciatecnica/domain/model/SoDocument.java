@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.ETipoDoc;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +29,12 @@ public class SoDocument {
     @JoinColumn(name = "service_order_id", insertable = false, updatable = false)
     private ServiceOrder serviceOrder;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_doc", length = 50)
-    private String tipoDoc;
+    private ETipoDoc tipoDoc;
+
+    @Column
+    private String nome;
 
     @Column(name = "file_path", length = 500)
     private String filePath;

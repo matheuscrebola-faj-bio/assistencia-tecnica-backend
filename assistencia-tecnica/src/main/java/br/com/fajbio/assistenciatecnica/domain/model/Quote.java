@@ -37,6 +37,9 @@ public class Quote {
     @Column(name = "validade")
     private LocalDate validade;
 
+    @Column(name = "revision")
+    private Byte revision;
+
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
 
