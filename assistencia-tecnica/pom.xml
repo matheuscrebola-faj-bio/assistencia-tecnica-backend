@@ -47,7 +47,6 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -56,6 +55,24 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
+        <!-- Email -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- DOCX -> PDF com docx4j + Apache FOP -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>11.4.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-export-fo</artifactId>
+            <version>11.4.10</version>
         </dependency>
 
 		<dependency>
