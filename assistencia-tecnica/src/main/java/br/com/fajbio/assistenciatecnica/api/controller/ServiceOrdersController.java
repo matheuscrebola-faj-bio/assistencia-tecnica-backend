@@ -1,8 +1,17 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
-import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import br.com.fajbio.assistenciatecnica.api.mapper.NotificationMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.ServiceOrderMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.SoDocumentMapper;
+import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
+import br.com.fajbio.assistenciatecnica.domain.model.Customer;
+import br.com.fajbio.assistenciatecnica.domain.model.Notification;
+import br.com.fajbio.assistenciatecnica.domain.model.SoDocument;
+import br.com.fajbio.assistenciatecnica.domain.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +21,15 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceOrdersController {
     private final AccessLogService accessLogService;
     private final AccessLogMapper accessLogMapper;
+    private final ServiceOrderService serviceOrderService;
+    private final ServiceOrderMapper serviceOrderMapper;
+    private final CustomerService customerService;
+    private final EquipmentService equipmentService;
+    private final SoStatusService soStatusService;
+    private final SoDocumentService soDocumentService;
+    private final SoDocumentMapper soDocumentMapper;
+    private final NotificationMapper notificationMapper;
+    private final NotificationService notificationService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -20,12 +38,21 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-//    @PostMapping
-//    public ResponseEntity<?> createServiceOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders"));
-//        //TODO: cria atendimento a partir dos dados do formulário; grava status inicial e anexa arquivos.
-//        return null;
-//    }
+
+    @PostMapping("/public")
+    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
+        //TODO: cria atendimento a partir dos dados do formulário; grava status inicial e anexa arquivos.
+        Customer customer = customerService.encontrarPeloEmail(req.email());
+        var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
+        var status = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
+        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment, status);
+        var service = serviceOrderService.cadastrar(serviceOrder);
+        SoDocument document = soDocumentMapper.mappear(service);
+        //TODO: preencher documento
+        var documento = soDocumentService.preencherDocumento(document, req);
+        notificationService.cadastrar(notificationMapper.mappear(service, req));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 //
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getServiceOrder(@RequestHeader Long id){

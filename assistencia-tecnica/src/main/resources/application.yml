@@ -1,6 +1,30 @@
 spring:
   application:
     name: assistencia-tecnica
+  mail:
+    host: smtp.seu-provedor.com
+    port: 587
+    username: ${MAIL_USER}      # Evite versionar segredos: use variáveis de ambiente
+    password: ${MAIL_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: false
+
+mail:
+  from: "Assistência Técnica <no-reply@seudominio.com>"   # opcional, mas útil
+
+docs:
+  template-path: "classpath:static/modelo.docx"           # seu DOCX em src/main/resources/static/
+  output-dir: "/var/app/docs/saidas"                      # onde salvar os PDFs gerados
+  templates:
+    service-order: "classpath:static/modelo-ordem-servico.docx"
+    # você pode adicionar outros:
+    # budget: "classpath:static/modelo-orcamento.docx"
+
 
   datasource:
     url: jdbc:postgresql://localhost:5432/assistencia_tecnica_db
@@ -23,5 +47,4 @@ spring:
 
 server:
   port: ${PORTA_API:8080}
-email-fabrica:
-  endereco: ${EMAIL_CORP:biotecnica@fajbio.com.br}
+

@@ -26,7 +26,7 @@ public class Notification {
     private Long serviceOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_order_id", insertable = false, updatable = false)
+    @JoinColumn(name = "service_order_id", updatable = false)
     private ServiceOrder serviceOrder;
 
     @Column(name = "tipo", length = 50)
@@ -40,7 +40,4 @@ public class Notification {
 
     @Column(name = "enviado_em")
     private LocalDateTime enviadoEm;
-
-    @Column(name = "notification_status", length = 50)
-    private String status;
 }
