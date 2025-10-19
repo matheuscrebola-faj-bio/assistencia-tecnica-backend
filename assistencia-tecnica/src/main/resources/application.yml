@@ -2,17 +2,19 @@ spring:
   application:
     name: assistencia-tecnica
   mail:
-    host: smtp.seu-provedor.com
-    port: 587
-    username: ${MAIL_USER}      # Evite versionar segredos: use variáveis de ambiente
-    password: ${MAIL_PASS}
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-app-password}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-        debug: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   datasource:
     url: jdbc:postgresql://localhost:5432/assistencia_tecnica_db
@@ -33,11 +35,6 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-
-
-mail:
-  from: "Assistência Técnica <no-reply@seudominio.com>"   # opcional, mas útil
-
 docs:
   template-path: "classpath:static/modelo.docx"           # seu DOCX em src/main/resources/static/
   output-dir: "/var/app/docs/saidas"                      # onde salvar os PDFs gerados
@@ -45,6 +42,9 @@ docs:
     service-order: "classpath:static/modelo-ordem-servico.docx"
     # você pode adicionar outros:
     # budget: "classpath:static/modelo-orcamento.docx"
+
+mail:
+  from: ${MAIL_FROM:${spring.mail.username}}
 
 server:
   port: ${PORTA_API:8080}

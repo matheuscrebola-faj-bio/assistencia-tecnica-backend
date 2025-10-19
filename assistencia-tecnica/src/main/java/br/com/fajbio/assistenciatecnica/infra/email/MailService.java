@@ -1,6 +1,8 @@
 package br.com.fajbio.assistenciatecnica.infra.email;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@ConditionalOnProperty(name = "spring.mail.enabled", havingValue = "true", matchIfMissing = false)
 public class MailService {
     private final JavaMailSender mailSender;
 
