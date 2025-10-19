@@ -23,6 +23,9 @@ public class Customer {
     @Column(name = "documento", unique = true, nullable = false, length = 20)
     private String documento;
 
+    @Column(name = "endereco_email", unique = true, nullable = false, length = 200)
+    private String email;
+
     @Column(name = "ativo", nullable = false)
     private Boolean ativo;
 
