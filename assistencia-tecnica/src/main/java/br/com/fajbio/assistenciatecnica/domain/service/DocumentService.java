@@ -9,11 +9,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.model.datastorage.migration.VariablePrepare;
-import org.docx4j.model.datastorage.migration.VariablePrepare.MigrationResult;
-import org.docx4j.model.datastorage.VariableReplace;
 import org.docx4j.Docx4J;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;

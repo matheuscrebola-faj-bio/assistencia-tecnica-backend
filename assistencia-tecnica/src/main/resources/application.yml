@@ -14,18 +14,6 @@ spring:
             enable: true
         debug: false
 
-mail:
-  from: "Assistência Técnica <no-reply@seudominio.com>"   # opcional, mas útil
-
-docs:
-  template-path: "classpath:static/modelo.docx"           # seu DOCX em src/main/resources/static/
-  output-dir: "/var/app/docs/saidas"                      # onde salvar os PDFs gerados
-  templates:
-    service-order: "classpath:static/modelo-ordem-servico.docx"
-    # você pode adicionar outros:
-    # budget: "classpath:static/modelo-orcamento.docx"
-
-
   datasource:
     url: jdbc:postgresql://localhost:5432/assistencia_tecnica_db
     driver-class-name: org.postgresql.Driver
@@ -44,6 +32,19 @@ docs:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+
+
+
+mail:
+  from: "Assistência Técnica <no-reply@seudominio.com>"   # opcional, mas útil
+
+docs:
+  template-path: "classpath:static/modelo.docx"           # seu DOCX em src/main/resources/static/
+  output-dir: "/var/app/docs/saidas"                      # onde salvar os PDFs gerados
+  templates:
+    service-order: "classpath:static/modelo-ordem-servico.docx"
+    # você pode adicionar outros:
+    # budget: "classpath:static/modelo-orcamento.docx"
 
 server:
   port: ${PORTA_API:8080}

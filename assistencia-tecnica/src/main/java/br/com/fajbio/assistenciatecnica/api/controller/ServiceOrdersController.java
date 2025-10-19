@@ -42,14 +42,14 @@ public class ServiceOrdersController {
     @PostMapping("/public")
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         //TODO: cria atendimento a partir dos dados do formulário; grava status inicial e anexa arquivos.
-        Customer customer = customerService.encontrarPeloEmail(req.email());
+        Customer customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
         var status = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
         var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment, status);
         var service = serviceOrderService.cadastrar(serviceOrder);
         SoDocument document = soDocumentMapper.mappear(service);
         //TODO: preencher documento
-        var documento = soDocumentService.preencherDocumento(document, req);
+        soDocumentService.preencherDocumento(document, req);
         notificationService.cadastrar(notificationMapper.mappear(service, req));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

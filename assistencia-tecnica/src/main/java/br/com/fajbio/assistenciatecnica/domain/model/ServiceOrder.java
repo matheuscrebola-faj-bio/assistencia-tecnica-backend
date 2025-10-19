@@ -29,28 +29,28 @@ public class ServiceOrder {
     private Long customerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", updatable = false)
+    @JoinColumn(name = "customer_id", insertable=false, updatable = false)
     private Customer customer;
 
     @Column(name = "equipment_id", nullable = false)
     private Long equipmentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipment_id", updatable = false)
+    @JoinColumn(name = "equipment_id", insertable=false, updatable = false)
     private Equipment equipment;
 
     @Column(name = "current_status_id", nullable = false)
     private Integer currentStatusId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_status_id")
+    @JoinColumn(name = "current_status_id", insertable=false, updatable=false)
     private SoStatus currentStatus;
 
     @Column(name = "assigned_to_user_id")
     private Long assignedToUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_to_user_id")
+    @JoinColumn(name = "assigned_to_user_id", insertable=false, updatable=false)
     private User assignedTo;
 
     @Enumerated(EnumType.STRING)

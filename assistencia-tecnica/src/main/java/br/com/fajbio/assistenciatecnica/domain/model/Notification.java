@@ -26,7 +26,7 @@ public class Notification {
     private Long serviceOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_order_id", updatable = false)
+    @JoinColumn(name = "service_order_id", insertable=false, updatable = false)
     private ServiceOrder serviceOrder;
 
     @Column(name = "tipo", length = 50)

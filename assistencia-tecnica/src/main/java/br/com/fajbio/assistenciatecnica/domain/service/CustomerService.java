@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     private final CustomerRepository repository;
 
-    public Customer encontrarPeloEmail(String email) {
-        return repository.findByEmail(email);
+    public Customer encontrarPeloDocumento(String documento) {
+        return repository.findByDocumento(documento);
     }
 }
