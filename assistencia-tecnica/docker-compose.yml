@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: assistencia-tecnica-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Porta exposta pela API (caso queira mudar)
+      PORTA_API: ${PORTA_API:-8080}
+
+      # Credenciais de e-mail (usadas pelo Spring via application.yml)
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+
+      # Postgres (sobrescreve se quiser; senão usa application.yml)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-assistencia_tecnica_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-assistenciatecnica}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-assistencia@tecnica2025}
+
+      # Outros toggles
+      SHOW_SQL: ${SHOW_SQL:-true}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      TZ: America/Sao_Paulo
+      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Duser.timezone=America/Sao_Paulo"
+    ports:
+      - "${PORTA_API:-8080}:8080"
+    volumes:
+      # Saída de PDFs/Docs: mapeie para persistir fora do container
+      - ./saidas:/var/app/docs/saidas
+    restart: unless-stopped
+
+    # Se você tiver actuator habilitado, pode ativar o healthcheck abaixo:
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget -qO- http://localhost:${PORTA_API:-8080}/actuator/health | grep -q '\"status\":\"UP\"'"]
+    #   interval: 30s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 30s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: assistencia-tecnica-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-assistencia_tecnica_db}
+      POSTGRES_USER: ${POSTGRES_USER:-assistenciatecnica}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-assistencia@tecnica2025}
+      TZ: America/Sao_Paulo
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-assistenciatecnica} -d ${POSTGRES_DB:-assistencia_tecnica_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+# Se quiser um client web rápido para o Postgres, descomente o Adminer:
+#  adminer:
+#    image: adminer:4
+#    container_name: assistencia-tecnica-adminer
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    environment:
+#      ADMINER_DEFAULT_SERVER: postgres
+#    ports:
+#      - "8081:8080"
+#    restart: unless-stopped
+
+volumes:
+  pgdata:
