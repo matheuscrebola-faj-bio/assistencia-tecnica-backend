@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: assistencia-tecnica
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/assistencia_tecnica_db
+    driver-class-name: org.postgresql.Driver
+    username: assistenciatecnica
+    password: assistencia@tecnica2025
+
+  jpa:
+    hibernate:
+      ddl-auto: create   # Flyway controla o schema; use 'none' se não quiser validar.
+    show-sql: ${SHOW_SQL:true}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: ${PORTA_API:8080}
+email-fabrica:
+  endereco: ${EMAIL_CORP:biotecnica@fajbio.com.br}

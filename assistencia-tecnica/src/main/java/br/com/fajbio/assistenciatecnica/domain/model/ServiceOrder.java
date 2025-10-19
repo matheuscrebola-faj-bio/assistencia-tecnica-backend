@@ -1,0 +1,66 @@
+package br.com.fajbio.assistenciatecnica.domain.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "tb_service_orders", schema = "assistencia_tecnica", indexes = {
+        @Index(name = "idx_so_customer", columnList = "customer_id"),
+        @Index(name = "idx_so_equipment", columnList = "equipment_id"),
+        @Index(name = "idx_so_status", columnList = "current_status_id"),
+        @Index(name = "idx_so_assigned", columnList = "assigned_to_user_id"),
+        @Index(name = "idx_so_created", columnList = "criado_em")
+})
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ServiceOrder {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    private Customer customer;
+
+    @Column(name = "equipment_id", nullable = false)
+    private Long equipmentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipment_id", insertable = false, updatable = false)
+    private Equipment equipment;
+
+    @Column(name = "current_status_id", nullable = false)
+    private Integer currentStatusId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_status_id", insertable = false, updatable = false)
+    private SoStatus currentStatus;
+
+    @Column(name = "assigned_to_user_id")
+    private Long assignedToUserId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_user_id", insertable = false, updatable = false)
+    private User assignedTo;
+
+    @Column(name = "criado_em", nullable = false)
+    private LocalDateTime criadoEm;
+
+    @OneToMany(mappedBy = "serviceOrder")
+    private List<SoStatusHistory> statusHistory;
+
+    @OneToMany(mappedBy = "serviceOrder")
+    private List<Quote> quotes;
+
+    @OneToMany(mappedBy = "serviceOrder")
+    private List<WorkOrder> workOrders;
+}

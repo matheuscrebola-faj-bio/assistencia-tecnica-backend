@@ -1,0 +1,274 @@
+package br.com.fajbio.assistenciatecnica.api.controller;
+
+import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
+import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/service-orders")
+@RequiredArgsConstructor
+public class ServiceOrdersController {
+    private final AccessLogService accessLogService;
+    private final AccessLogMapper accessLogMapper;
+
+//    @GetMapping
+//    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders"));
+//        //TODO: lista atendimentos com filtros (status, cliente, técnico).
+//        return null;
+//    }
+//
+//    @PostMapping
+//    public ResponseEntity<?> createServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders"));
+//        //TODO: cria atendimento a partir dos dados do formulário; grava status inicial e anexa arquivos.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id"));
+//        //TODO: detalhe do atendimento (campos principais).
+//        return null;
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id"));
+//        //TODO: atualiza campos do atendimento.
+//        return null;
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleteServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/service-orders/id"));
+//        //TODO: cancela/Remove (conforme regra de negócio).
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/timeline")
+//    public ResponseEntity<?> getServiceOrderTimeline(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/timeline"));
+//        //TODO: consolida e retorna linha do tempo (histórico de status e eventos).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/assign/{userId}")
+//    public ResponseEntity<?> assignServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/assign/id"));
+//        //TODO: atribui técnico e atualiza status conforme regra.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/status/history")
+//    public ResponseEntity<?> listStatusHistory(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/status/history"));
+//        //TODO: retorna histórico de mudanças de status (audit trail).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/status")
+//    public ResponseEntity<?> changeStatus(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/status"));
+//        //TODO: valida transição, grava histórico e atualiza status atual.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/intake")
+//    public ResponseEntity<?> getIntake(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/intake"));
+//        //TODO: retorna dados de recebimento (data, lacre, observações).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/intake")
+//    public ResponseEntity<?> createIntake(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/intake"));
+//        //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
+//        return null;
+//    }
+//
+//    @PutMapping("/{id}/intake/{intakeId}")
+//    public ResponseEntity<?> updateIntake(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/intake/id"));
+//        //TODO: atualiza registro de recebimento.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/initial-tests")
+//    public ResponseEntity<?> listInitialTests(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/initial-tests"));
+//        //TODO: lista testes iniciais do atendimento.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/initial-tests")
+//    public ResponseEntity<?> createInitialTest(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/initial-tests"));
+//        //TODO: cria teste inicial (tecn. responsável, período, resultado).
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/initial-tests/{testId}")
+//    public ResponseEntity<?> getInitialTest(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/initial-tests/id"));
+//        //TODO: detalhe do teste.
+//        return null;
+//    }
+//
+//    @PutMapping("/{id}/initial-tests/{testId}")
+//    public ResponseEntity<?> updateInitialTest(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/initial-tests/id"));
+//        //TODO: atualiza teste.
+//        return null;
+//    }
+//
+//    @DeleteMapping("/{id}/initial-tests/{testId}")
+//    public ResponseEntity<?> deleteInitialTest(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/service-orders/id/initial-tests/id"));
+//        //TODO: remove teste.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/calibrations")
+//    public ResponseEntity<?> listCalibrations(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/calibrations"));
+//        //TODO: lista calibrações da OS.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/calibrations")
+//    public ResponseEntity<?> createCalibration(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/calibrations"));
+//        //TODO: cria calibração e pontos (em transação).
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/checklists")
+//    public ResponseEntity<?> listChecklists(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/checklists"));
+//        //TODO: lista checklists preenchidos.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/checklists")
+//    public ResponseEntity<?> createChecklist(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/checklists"));
+//        //TODO: cria checklist a partir de um modelo e salva respostas.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/closeout")
+//    public ResponseEntity<?> getCloseout(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/closeout"));
+//        //TODO: retorna dados de fechamento (testes finais, data, observações).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/closeout")
+//    public ResponseEntity<?> createCloseout(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/closeout"));
+//        //TODO: registra fechamento da OS e prepara geração de documentos.
+//        return null;
+//    }
+//
+//    @PutMapping("/{id}/closeout")
+//    public ResponseEntity<?> updateCloseout(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/closeout"));
+//        //TODO: atualiza fechamento.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/quotes")
+//    public ResponseEntity<?> listQuotesByServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/quotes"));
+//        //TODO: lista orçamentos da OS (com status).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/quotes")
+//    public ResponseEntity<?> createQuote(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/quotes"));
+//        //TODO: cria orçamento (itens, totais) e mantém como rascunho.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/work-orders")
+//    public ResponseEntity<?> listWorkOrders(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/work-orders"));
+//        //TODO: lista ordens de trabalho da OS.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/work-orders")
+//    public ResponseEntity<?> createWorkOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/work-orders"));
+//        //TODO: cria ordem de trabalho (início do reparo).
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/documents")
+//    public ResponseEntity<?> listDocuments(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/documents"));
+//        //TODO: lista documentos anexados/gerados.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/documents")
+//    public ResponseEntity<?> createDocument(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/documents"));
+//        //TODO: anexa documento (upload/registro de link).
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/documents/generate/fat")
+//    public ResponseEntity<?> generateFatDocument(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/documents/generate/fat"));
+//        //TODO: compõe dados (intake, testes, orçamento, closeout), gera .docx, renderiza .pdf, salva em repositório e retorna link; opcionalmente envia por email.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/invoices")
+//    public ResponseEntity<?> listInvoicesByServiceOrder(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/invoices"));
+//        //TODO: lista faturas relacionadas à OS.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/invoices")
+//    public ResponseEntity<?> createInvoice(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/invoices"));
+//        //TODO: gera fatura a partir do orçamento aprovado (itens, totais).
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/shipments")
+//    public ResponseEntity<?> listShipments(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/shipments"));
+//        //TODO: lista envios da OS.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/shipments")
+//    public ResponseEntity<?> createShipment(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
+//        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
+//        return null;
+//    }
+//
+//    @GetMapping("/{id}/notifications")
+//    public ResponseEntity<?> listNotifications(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/notifications"));
+//        //TODO: lista notificações emitidas/pendentes da OS.
+//        return null;
+//    }
+//
+//    @PostMapping("/{id}/notifications")
+//    public ResponseEntity<?> createNotification(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/notifications"));
+//        //TODO: envia notificação (email/SMS) usando template e parâmetros; registra status/retentativas.
+//        return null;
+//    }
+}
