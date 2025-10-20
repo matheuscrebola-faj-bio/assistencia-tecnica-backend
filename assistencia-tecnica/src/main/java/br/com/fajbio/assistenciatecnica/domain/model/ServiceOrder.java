@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.domain.model;
 
 import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
 import br.com.fajbio.assistenciatecnica.domain.enums.EProductLine;
+import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,12 @@ public class ServiceOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String atendimento;
+
+    @Column
+    private Short ultimoValor;
+
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
@@ -39,12 +46,9 @@ public class ServiceOrder {
     @JoinColumn(name = "equipment_id", insertable=false, updatable = false)
     private Equipment equipment;
 
-    @Column(name = "current_status_id", nullable = false)
-    private Integer currentStatusId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_status_id", insertable=false, updatable=false)
-    private SoStatus currentStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ESoStatus currentStatus;
 
     @Column(name = "assigned_to_user_id")
     private Long assignedToUserId;

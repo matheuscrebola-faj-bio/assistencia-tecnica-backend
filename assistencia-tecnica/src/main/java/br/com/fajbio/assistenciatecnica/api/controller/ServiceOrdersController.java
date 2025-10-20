@@ -1,13 +1,9 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
-import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.NotificationMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.ServiceOrderMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.SoDocumentMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.*;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
-import br.com.fajbio.assistenciatecnica.domain.model.Customer;
-import br.com.fajbio.assistenciatecnica.domain.model.SoDocument;
+import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.service.*;
 import br.com.fajbio.assistenciatecnica.infra.email.EmailBodies;
 import br.com.fajbio.assistenciatecnica.infra.email.MailService;
@@ -36,6 +32,9 @@ public class ServiceOrdersController {
     private final DocTemplateFillService docTemplateFillService;
     private final MailService mailService;
     private final DocumentService documentService;
+    private final SoStatusHistoryMapper soStatusHistoryMapper;
+    private final SoStatusHistoryService soStatusHistoryService;
+    private final UserService userService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -48,10 +47,9 @@ public class ServiceOrdersController {
     @PostMapping("/public")
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
         // 1) Cria OS e registros relacionados
-        Customer customer = customerService.encontrarPeloDocumento(req.cnpj());
+        var customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
-        var status = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
-        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment, status);
+        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
         var service = serviceOrderService.cadastrar(serviceOrder);
 
         SoDocument document = soDocumentMapper.mappear(service);
@@ -141,12 +139,18 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-//    @PostMapping("/{id}/intake")
-//    public ResponseEntity<?> createIntake(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/intake"));
-//        //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
-//        return null;
-//    }
+    @PostMapping("/{id}/intake")
+    public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
+        //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
+        ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        var recebimento = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
+        var testes = soStatusService.encontrarPeloNome(ESoStatus.TESTES_INICIAIS);
+        User user = userService.encontrarPeloId(userId);
+        SoStatusHistory soStatusHistory = soStatusHistoryService.cadastrar(soStatusHistoryMapper.mappear(serviceOrder, recebimento, testes, user));
+        serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, soStatusHistory));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 //
 //    @PutMapping("/{id}/intake/{intakeId}")
 //    public ResponseEntity<?> updateIntake(@RequestHeader Long id){

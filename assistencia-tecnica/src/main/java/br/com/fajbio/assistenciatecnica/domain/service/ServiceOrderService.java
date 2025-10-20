@@ -19,4 +19,8 @@ public class ServiceOrderService {
     public ServiceOrder cadastrar(ServiceOrder serviceOrder) {
         return salvar(serviceOrder);
     }
+
+    public ServiceOrder encontrarPeloId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
 }
