@@ -1,6 +1,7 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
 import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;

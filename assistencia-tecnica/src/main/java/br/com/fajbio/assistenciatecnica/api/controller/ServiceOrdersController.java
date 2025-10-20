@@ -1,6 +1,8 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
+import br.com.fajbio.assistenciatecnica.api.dto.SoIntakeReq;
 import br.com.fajbio.assistenciatecnica.api.mapper.*;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("/service-orders")
@@ -35,6 +38,8 @@ public class ServiceOrdersController {
     private final SoStatusHistoryMapper soStatusHistoryMapper;
     private final SoStatusHistoryService soStatusHistoryService;
     private final UserService userService;
+    private final SoIntakeMapper soIntakeMapper;
+    private final SoIntakeService soIntakeService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -43,6 +48,12 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
+    @GetMapping
+    public ResponseEntity<?> listServiceOrders(@RequestHeader Long userId, ESoStatus eSoStatus){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
+        List<ServiceOrdersRes> res = serviceOrderService.encontrarPeloStatusAtual(eSoStatus);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
     @PostMapping("/public")
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
@@ -140,7 +151,7 @@ public class ServiceOrdersController {
 //    }
 //
     @PostMapping("/{id}/intake")
-    public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+    public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody SoIntakeReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
         //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
         ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
@@ -148,7 +159,8 @@ public class ServiceOrdersController {
         var testes = soStatusService.encontrarPeloNome(ESoStatus.TESTES_INICIAIS);
         User user = userService.encontrarPeloId(userId);
         SoStatusHistory soStatusHistory = soStatusHistoryService.cadastrar(soStatusHistoryMapper.mappear(serviceOrder, recebimento, testes, user));
-        serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, soStatusHistory));
+        var service = serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, soStatusHistory));
+        soIntakeService.cadastrar(soIntakeMapper.mappear(req, service));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 //
