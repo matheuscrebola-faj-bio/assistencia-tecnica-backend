@@ -3,6 +3,7 @@ package br.com.fajbio.assistenciatecnica.infra.email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -28,31 +29,29 @@ public class MailService {
     @Value("${mail.from:}")
     private String defaultFrom; // pode ser vazio; se vazio, usa o próprio username
 
-    public void enviarComAnexoPdf(String para,
-                                  String assunto,
-                                  String corpoHtml,
-                                  Path pdf) throws Exception {
+    public void enviarComAnexo(String para,
+                               String assunto,
+                               String corpoHtml,
+                               Path anexo) throws Exception {
 
-        if (!Files.exists(pdf)) {
-            throw new IllegalArgumentException("Arquivo PDF não existe: " + pdf);
+        if (anexo == null || !Files.exists(anexo)) {
+            throw new IllegalArgumentException("Anexo não encontrado: " + anexo);
         }
 
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(
-                msg, true, StandardCharsets.UTF_8.name());
+        var msg = mailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(msg, true, StandardCharsets.UTF_8.name());
 
-        // Remetente
-        if (defaultFrom != null && !defaultFrom.isBlank()) {
-            helper.setFrom(new InternetAddress(defaultFrom));
-        } else {
-            helper.setFrom(new InternetAddress(smtpUser));
-        }
-
+        helper.setFrom((defaultFrom != null && !defaultFrom.isBlank()) ? defaultFrom : smtpUser);
         helper.setTo(para);
         helper.setSubject(assunto);
-        helper.setText(corpoHtml, true); // true = HTML
+        helper.setText(corpoHtml, true);
 
-        helper.addAttachment(pdf.getFileName().toString(), pdf.toFile());
+        String fileName = anexo.getFileName().toString();
+        String contentType = Files.probeContentType(anexo);
+        if (contentType == null || contentType.isBlank()) {
+            contentType = "application/octet-stream";
+        }
+        helper.addAttachment(fileName, (InputStreamSource) anexo.toFile(), contentType);
 
         mailSender.send(msg);
     }

@@ -17,10 +17,10 @@ spring:
           writetimeout: 5000
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/assistencia_tecnica_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:assistencia_tecnica_db}
     driver-class-name: org.postgresql.Driver
-    username: assistenciatecnica
-    password: assistencia@tecnica2025
+    username: ${DB_USER:assistenciatecnica}
+    password: ${DB_PASS:assistencia@tecnica2025}
 
   jpa:
     hibernate:
@@ -36,10 +36,11 @@ spring:
     baseline-on-migrate: true
 
 docs:
-  template-path: "classpath:static/modelo.docx"           # seu DOCX em src/main/resources/static/
   output-dir: "/var/app/docs/saidas"                      # onde salvar os PDFs gerados
   templates:
-    service-order: "classpath:static/modelo-ordem-servico.docx"
+    service-order: "classpath:static/solicitacao_assistencia_tecnica.docx"
+    testes-iniciais: "classpath:static/mca1896_testes.docx"
+    solicitacao-assistencia-tecnica: "classpath:static/msolicitacao_assistencia_tecnica.docx"
     # você pode adicionar outros:
     # budget: "classpath:static/modelo-orcamento.docx"
 

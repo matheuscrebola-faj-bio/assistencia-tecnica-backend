@@ -32,41 +32,27 @@ public class DocumentService {
     @Value("${docs.output-dir}")
     private String outputDir;
 
-
     /**
      * Gera PDF preenchendo variáveis no DOCX template.
-     * @param variables mapa ex.: "empresa"->"ACME", "cnpj"->"00.000.000/0001-00"
+     * @param docxPath mapa ex.: "empresa"->"ACME", "cnpj"->"00.000.000/0001-00"
      * @return Path do PDF salvo
      */
-    public Path gerarPdf(Map<String, String> variables) throws Exception {
-        // Carrega template do classpath
-        Resource res = resourceLoader.getResource(templatePath);
-        if (!res.exists()) {
-            throw new IllegalStateException("Template não encontrado em: " + templatePath);
+    public Path gerarPdfFromDocx(Path docxPath) throws Exception {
+        if (docxPath == null || !Files.exists(docxPath)) {
+            throw new IllegalArgumentException("DOCX inexistente: " + docxPath);
         }
 
-        try (InputStream is = res.getInputStream()) {
-            WordprocessingMLPackage pkg = WordprocessingMLPackage.load(is);
-            MainDocumentPart mdp = pkg.getMainDocumentPart();
+        var pkg = WordprocessingMLPackage.load(docxPath.toFile());
+        var fo = Docx4J.createFOSettings();
+        fo.setWmlPackage(pkg);
 
-            // Substitui ${chave} por valor
-            mdp.variableReplace(variables);
+        Files.createDirectories(Paths.get(outputDir));
+        String outName = docxPath.getFileName().toString().replaceAll("\\.docx$", "") + ".pdf";
+        Path pdfPath = Paths.get(outputDir, outName);
 
-            // Garante diretório de saída
-            Files.createDirectories(Paths.get(outputDir));
-            String filename = "documento-" + UUID.randomUUID() + ".pdf";
-            Path pdfPath = Paths.get(outputDir, filename);
-
-            // Converte para PDF (via XSL-FO)
-            FOSettings fo = Docx4J.createFOSettings();
-            fo.setWmlPackage(pkg);
-
-            try (OutputStream os = new FileOutputStream(pdfPath.toFile())) {
-                // FLAG_EXPORT_PREFER_XSL tende a gerar PDFs mais estáveis
-                Docx4J.toFO(fo, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
-            }
-
-            return pdfPath;
+        try (OutputStream os = new FileOutputStream(pdfPath.toFile())) {
+            Docx4J.toFO(fo, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
         }
+        return pdfPath;
     }
 }

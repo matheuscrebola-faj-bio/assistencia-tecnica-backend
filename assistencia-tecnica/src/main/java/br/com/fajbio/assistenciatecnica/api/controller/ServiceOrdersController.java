@@ -7,13 +7,16 @@ import br.com.fajbio.assistenciatecnica.api.mapper.ServiceOrderMapper;
 import br.com.fajbio.assistenciatecnica.api.mapper.SoDocumentMapper;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
-import br.com.fajbio.assistenciatecnica.domain.model.Notification;
 import br.com.fajbio.assistenciatecnica.domain.model.SoDocument;
 import br.com.fajbio.assistenciatecnica.domain.service.*;
+import br.com.fajbio.assistenciatecnica.infra.email.EmailBodies;
+import br.com.fajbio.assistenciatecnica.infra.email.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/service-orders")
@@ -30,6 +33,9 @@ public class ServiceOrdersController {
     private final SoDocumentMapper soDocumentMapper;
     private final NotificationMapper notificationMapper;
     private final NotificationService notificationService;
+    private final DocTemplateFillService docTemplateFillService;
+    private final MailService mailService;
+    private final DocumentService documentService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -40,17 +46,42 @@ public class ServiceOrdersController {
 //
 
     @PostMapping("/public")
-    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
-        //TODO: cria atendimento a partir dos dados do formulário; grava status inicial e anexa arquivos.
+    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
+        // 1) Cria OS e registros relacionados
         Customer customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
         var status = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
         var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment, status);
         var service = serviceOrderService.cadastrar(serviceOrder);
+
         SoDocument document = soDocumentMapper.mappear(service);
-        //TODO: preencher documento
-        soDocumentService.preencherDocumento(document, req);
+
+        // 2) Preenche DOCX (telefone = req.contato(), modelo = tipoDoc)
+        Path docx = docTemplateFillService.preencherServiceOrder(
+                req,
+                req.contato(),                    // telefone
+                document.getTipoDoc().toString() // modelo do documento
+        );
+
+        // 3) Converte para PDF
+        Path pdf = documentService.gerarPdfFromDocx(docx);
+
+        // 4) Persiste metadados do documento com o caminho físico do PDF
+        soDocumentService.cadastrar(soDocumentMapper.mappear(document, pdf));
+
+        // 5) Cria notificação (como você já faz)
         notificationService.cadastrar(notificationMapper.mappear(service, req));
+
+        // 6) Envia e-mail para o contato informado no formulário
+        String assunto = "Instruções de envio do equipamento — Ordem de Serviço";
+        String corpoHtml = EmailBodies.instrucoesEnvioHtml();
+        mailService.enviarComAnexo(
+                req.email(),     // destinatário
+                assunto,
+                corpoHtml,
+                pdf              // anexo PDF
+        );
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 //

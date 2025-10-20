@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,6 +28,21 @@ public class SoDocumentMapper {
                                 DateTimeFormatter
                                         .ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .filePath(ARMAZENAMENTO_LOCAL)
+                .criadoEm(LocalDateTime.now())
+                .build();
+    }
+
+    public SoDocument mappear(SoDocument document, Path path) {
+        return SoDocument.builder()
+                .serviceOrderId(document.getServiceOrderId())
+                .serviceOrder(document.getServiceOrder())
+                .tipoDoc(ETipoDoc.FORMULARIO_DE_SERVICO)
+                .nome("Formulário de Serviço"+"-"
+                        +document.getId()+"-"
+                        + LocalDateTime.now().format(
+                        DateTimeFormatter
+                                .ofPattern("dd-MM-yyyy HH:mm:ss")))
+                .filePath(path.toString())
                 .criadoEm(LocalDateTime.now())
                 .build();
     }
