@@ -36,12 +36,15 @@ public class InitialTest {
     @JoinColumn(name = "tecnico_id", insertable = false, updatable = false)
     private User tecnico;
 
-    @Column(name = "data_inicio")
-    private LocalDateTime dataInicio;
+    @Column(length = 100)
+    private String aparelho;
 
-    @Column(name = "data_fim")
-    private LocalDate dataFim;
+    @Column(name = "criado_em")
+    private LocalDateTime criadoEm;
 
-    @Column(name = "resultado", length = 100)
+    @Column
+    private String valores;
+
+    @Column(name = "resultado")
     private String resultado;
 }

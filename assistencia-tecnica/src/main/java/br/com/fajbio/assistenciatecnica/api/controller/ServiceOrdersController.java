@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.InitialTestReq;
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
 import br.com.fajbio.assistenciatecnica.api.dto.SoIntakeReq;
@@ -40,6 +41,8 @@ public class ServiceOrdersController {
     private final UserService userService;
     private final SoIntakeMapper soIntakeMapper;
     private final SoIntakeService soIntakeService;
+    private final InitialTestService initialTestService;
+    private final InitialTestMapper initialTestMapper;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -62,6 +65,7 @@ public class ServiceOrdersController {
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
         var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
         var service = serviceOrderService.cadastrar(serviceOrder);
+        customerService.adicionarOrdemServico(customer, service);
 
         SoDocument document = soDocumentMapper.mappear(service);
 
@@ -178,12 +182,14 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-//    @PostMapping("/{id}/initial-tests")
-//    public ResponseEntity<?> createInitialTest(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/initial-tests"));
-//        //TODO: cria teste inicial (tecn. responsável, período, resultado).
-//        return null;
-//    }
+    @PostMapping("/{id}/initial-tests")
+    public ResponseEntity<?> createInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody InitialTestReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/initial-tests"));
+        //TODO: cria teste inicial (tecn. responsável, período, resultado).
+        ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        initialTestService.cadastrar(initialTestMapper.mappear(serviceOrder, req));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 //
 //    @GetMapping("/{id}/initial-tests/{testId}")
 //    public ResponseEntity<?> getInitialTest(@RequestHeader Long id){

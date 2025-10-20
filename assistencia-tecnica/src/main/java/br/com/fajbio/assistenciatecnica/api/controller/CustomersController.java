@@ -1,8 +1,13 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerReq;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.CustomerMapper;
+import br.com.fajbio.assistenciatecnica.domain.model.Customer;
 import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import br.com.fajbio.assistenciatecnica.domain.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class CustomersController {
     private final AccessLogService accessLogService;
     private final AccessLogMapper accessLogMapper;
+    private final CustomerMapper customerMapper;
+    private final CustomerService customerService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listCustomers(@RequestHeader Long id){
@@ -20,12 +27,13 @@ public class CustomersController {
 //        return null;
 //    }
 //
-//    @PostMapping
-//    public ResponseEntity<?> createCustomer(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/customers"));
-//        //TODO: cria cliente, contatos e endereços (transação).
-//        return null;
-//    }
+    @PostMapping
+    public ResponseEntity<Long> createCustomer(@RequestHeader Long userId, @RequestBody CustomerReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
+        //TODO: cria cliente, contatos e endereços (transação).
+        var customer = customerService.cadastrar(customerMapper.mappear(req));
+        return new ResponseEntity<>(customer.getId(), HttpStatus.CREATED);
+    }
 //
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getCustomerById(@RequestHeader Long id){
