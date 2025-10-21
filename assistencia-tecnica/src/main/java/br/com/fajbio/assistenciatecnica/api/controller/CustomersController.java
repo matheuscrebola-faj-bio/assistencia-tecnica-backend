@@ -28,11 +28,11 @@ public class CustomersController {
 //    }
 //
     @PostMapping
-    public ResponseEntity<Long> createCustomer(@RequestHeader Long userId, @RequestBody CustomerReq req){
+    public ResponseEntity<?> createCustomer(@RequestHeader Long userId, @RequestBody CustomerReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
         //TODO: cria cliente, contatos e endereços (transação).
-        var customer = customerService.cadastrar(customerMapper.mappear(req));
-        return new ResponseEntity<>(customer.getId(), HttpStatus.CREATED);
+        customerService.cadastrar(customerMapper.mappear(req));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 //
 //    @GetMapping("/{id}")

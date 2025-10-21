@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteEvent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +29,9 @@ public class QuoteEvent {
     @JoinColumn(name = "quote_id", insertable = false, updatable = false)
     private Quote quote;
 
-    @Column(name = "tipo", length = 50)
-    private String tipo;
+    @Column(name = "tipo", length = 20)
+    @Enumerated(EnumType.STRING)
+    private EQuoteEvent tipo;
 
     @Column(name = "user_id")
     private Long userId;

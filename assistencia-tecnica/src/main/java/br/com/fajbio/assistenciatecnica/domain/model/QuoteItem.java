@@ -37,15 +37,4 @@ public class QuoteItem {
     @Column(name = "descricao", length = 500)
     private String descricao;
 
-    @Column(name = "quantidade", precision = 10, scale = 2)
-    private Byte quantidade;
-
-    @Column(name = "preco_unitario", precision = 10, scale = 2)
-    private BigDecimal precoUnitario;
-
-    @Column(name = "desconto_pct", precision = 5, scale = 2)
-    private BigDecimal descontoPct;
-
-    @Column(name = "imposto_pct", precision = 5, scale = 2)
-    private BigDecimal impostoPct;
 }

@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,14 +32,15 @@ public class Quote {
     @JoinColumn(name = "service_order_id", insertable = false, updatable = false)
     private ServiceOrder serviceOrder;
 
-    @Column(name = "quote_status", length = 50)
-    private String status;
+    @Column(name = "quote_status", length = 20)
+    @Enumerated(EnumType.STRING)
+    private EQuoteStatus status;
 
     @Column(name = "validade")
     private LocalDate validade;
 
     @Column(name = "revision")
-    private Byte revision;
+    private Byte revision = 0;
 
     @Column(name = "created_by_user_id")
     private Long createdByUserId;

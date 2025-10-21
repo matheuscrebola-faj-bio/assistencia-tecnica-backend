@@ -1,9 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
-import br.com.fajbio.assistenciatecnica.api.dto.InitialTestReq;
-import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
-import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
-import br.com.fajbio.assistenciatecnica.api.dto.SoIntakeReq;
+import br.com.fajbio.assistenciatecnica.api.dto.*;
 import br.com.fajbio.assistenciatecnica.api.mapper.*;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
@@ -43,6 +40,10 @@ public class ServiceOrdersController {
     private final SoIntakeService soIntakeService;
     private final InitialTestService initialTestService;
     private final InitialTestMapper initialTestMapper;
+    private final QuoteMapper quoteMapper;
+    private final QuoteService quoteService;
+    private final ServiceService serviceService;
+    private final ServiceMapper serviceMapper;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -268,12 +269,19 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-//    @PostMapping("/{id}/quotes")
-//    public ResponseEntity<?> createQuote(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/quotes"));
-//        //TODO: cria orçamento (itens, totais) e mantém como rascunho.
-//        return null;
-//    }
+    @PostMapping("/{id}/quotes")
+    public ResponseEntity<?> createQuote(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody QuoteReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/quotes"));
+        //TODO: cria orçamento (itens, totais) e mantém como rascunho.
+        User user = userService.encontrarPeloId(userId);
+        ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        Quote quote = quoteMapper.mappear(user, serviceOrder);
+        List<String> serviceNames = serviceMapper.mappear(req.quoteItemReq());
+        List<Service> service = serviceService.encontrarTodosPeloNome(serviceNames);
+        List<QuoteItem> quoteItem = quoteMapper.mappear(quote,req,service);
+        ServiceOrder newServiceOrder = serviceOrderMapper.mappear();
+        return null;
+    }
 //
 //    @GetMapping("/{id}/work-orders")
 //    public ResponseEntity<?> listWorkOrders(@RequestHeader Long id){
