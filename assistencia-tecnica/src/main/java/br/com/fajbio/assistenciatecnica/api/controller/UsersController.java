@@ -1,10 +1,23 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.RoleRes;
+import br.com.fajbio.assistenciatecnica.api.dto.UserReq;
+import br.com.fajbio.assistenciatecnica.api.dto.UserRes;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.RoleMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.UserMapper;
+import br.com.fajbio.assistenciatecnica.domain.model.Role;
+import br.com.fajbio.assistenciatecnica.domain.model.User;
 import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import br.com.fajbio.assistenciatecnica.domain.service.RoleService;
+import br.com.fajbio.assistenciatecnica.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -12,60 +25,78 @@ import org.springframework.web.bind.annotation.*;
 public class UsersController {
     private final AccessLogService accessLogService;
     private final AccessLogMapper accessLogMapper;
-//
-//    @GetMapping
-//    public ResponseEntity<?> listUsers(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/users"));
-//        //TODO: lista usuários do banco com filtros/paginação.
-//        return null;
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<?> createUser(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/users"));
-//        //TODO: cria usuário no banco e define perfis (roles) iniciais.
-//        return null;
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getUserById(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/users/id"));
-//        //TODO: busca dados completos do usuário.
-//        return null;
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateUser(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/users/id"));
-//        //TODO: atualiza dados do usuário.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteUser(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/users/id"));
-//        //TODO: desativa/Remove usuário (soft/hard, conforme regra).
-//        return null;
-//    }
-//
-//    @PostMapping("/{id}/roles/{roleId}")
-//    public ResponseEntity<?> addRoleToUser(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/users/id/roles/ID"));
-//        //TODO: vincula perfil ao usuário.
-//        return null;
-//    }
-//
-//    @GetMapping("/roles")
-//    public ResponseEntity<?> listRoles(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/users/id/roles/"));
-//        //TODO: lista catálogo de perfis.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{id}/roles/{roleId}")
-//    public ResponseEntity<?> removeRoleFromUser(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/users/id/roles/id"));
-//        //TODO: remove perfil do usuário.
-//        return null;
-//    }
+    private final UserMapper userMapper;
+    private final UserService userService;
+    private final RoleMapper roleMapper;
+    private final RoleService roleService;
+
+    @GetMapping
+    public ResponseEntity<List<UserRes>> listUsers(@RequestHeader Long userId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/users"));
+        // lista usuários do banco com filtros/paginação.
+        List<UserRes> res = userMapper.mappear(userService.encontrarTodos());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestHeader Long userId, @RequestBody UserReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/users"));
+        // cria usuário no banco e define perfis (roles) iniciais.
+        Set<Role> roles = roleService.encontrarPeloNome(req.roles());
+        userService.cadastrar(userMapper.mappear(req, roles));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserRes> getUserById(@RequestHeader Long reqId, @PathVariable Long userId){
+        accessLogService.registrar(accessLogMapper.mappear(reqId, "GET", "/users/id"));
+        UserRes res = userMapper.mappear(userService.encontrarPeloId(userId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@RequestHeader Long reqId, @PathVariable Long userId, @RequestBody UserReq req){
+        accessLogService.registrar(accessLogMapper.mappear(reqId, "PUT", "/users/id"));
+        Set<Role> roles = roleService.encontrarPeloNome(req.roles());
+        userService.atualizar(userMapper.mappear(userId, req, roles));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@RequestHeader Long reqId, @PathVariable Long userId){
+        accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id"));
+        // desativa/Remove usuário (soft/hard, conforme regra).
+        User user = userService.encontrarPeloId(userId);
+        userService.delecaoLogica(userMapper.mappear(user, false));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/roles/{roleId}")
+    public ResponseEntity<?> addRoleToUser(@RequestHeader Long reqId, @PathVariable Long userId, @PathVariable Long roleId){
+        accessLogService.registrar(accessLogMapper.mappear(reqId, "POST", "/users/id/roles/ID"));
+        // vincula perfil ao usuário.
+        Role role = roleService.encontrarPeloId(roleId);
+        User user = userService.encontrarPeloId(userId);
+        userService.adicionarRoleAoUsuario(userMapper.mappear(role, user));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<RoleRes>> listRoles(@RequestHeader Long id){
+        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/users/id/roles/"));
+        // lista catálogo de perfis.
+        List<Role> roles = roleService.encontrarTodos();
+        List<RoleRes> res = roleMapper.mappear(roles);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/roles/{roleId}")
+    public ResponseEntity<?> removeRoleFromUser(@RequestHeader Long reqId, @PathVariable Long userId, @PathVariable Long roleId){
+        accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id/roles/id"));
+        // remove perfil do usuário.
+        User user = userService.encontrarPeloId(userId);
+        Role role = roleService.encontrarPeloId(roleId);
+        userService.removerRoleDoUsuario(userMapper.mappear(user, role));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
