@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SoStatusMapper {
 
-    public SoStatus mappear() {
+    public SoStatus mappear(ESoStatus status) {
         return SoStatus.builder()
-                .nome(ESoStatus.AGUARDANDO_RECEBIMENTO)
+                .nome(status)
                 .build();
     }
+
 }

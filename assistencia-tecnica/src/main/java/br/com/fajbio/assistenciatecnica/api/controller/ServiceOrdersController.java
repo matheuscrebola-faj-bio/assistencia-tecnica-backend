@@ -44,6 +44,8 @@ public class ServiceOrdersController {
     private final QuoteService quoteService;
     private final ServiceService serviceService;
     private final ServiceMapper serviceMapper;
+    private final SoStatusMapper soStatusMapper;
+    private final SoStausService soStausService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -278,9 +280,12 @@ public class ServiceOrdersController {
         Quote quote = quoteMapper.mappear(user, serviceOrder);
         List<String> serviceNames = serviceMapper.mappear(req.quoteItemReq());
         List<Service> service = serviceService.encontrarTodosPeloNome(serviceNames);
-        List<QuoteItem> quoteItem = quoteMapper.mappear(quote,req,service);
-        ServiceOrder newServiceOrder = serviceOrderMapper.mappear();
-        return null;
+        List<QuoteItem> quoteItem = quoteService.cadastrar(quoteMapper.mappear(quote,req,service));
+        Quote newQuote = quoteService.cadastrar(quoteMapper.mappear(quoteItem, quote));
+        ServiceOrder newServiceOrder = serviceOrderMapper.mappear(newQuote, serviceOrder);
+        SoStatus soStatus = soStausService.cadastrar(soStatusMapper.mappear(ESoStatus.VALIDAR_ORACAMENTO));
+        serviceOrderService.cadastrar(serviceOrderMapper.mappear(newServiceOrder, soStatusHistoryMapper.mappear(newServiceOrder, soStatus, user)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 //
 //    @GetMapping("/{id}/work-orders")

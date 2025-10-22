@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.QuoteItemReq;
 import br.com.fajbio.assistenciatecnica.api.dto.QuoteReq;
+import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteEvent;
 import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
 import org.springframework.stereotype.Component;
@@ -46,4 +47,30 @@ public class QuoteMapper {
                 .toList();
     }
 
+    public Quote mappear(List<QuoteItem> quoteItem, Quote quote) {
+        return Quote.builder()
+                .id(quote.getId())
+                .serviceOrderId(quote.getServiceOrderId())
+                .serviceOrder(quote.getServiceOrder())
+                .status(quote.getStatus())
+                .validade(quote.getValidade())
+                .revision(quote.getRevision())
+                .createdByUserId(quote.getCreatedByUserId())
+                .createdBy(quote.getCreatedBy())
+                .criadoEm(quote.getCriadoEm())
+                .items(quoteItem)
+                .events(List.of(mappear(quote, EQuoteEvent.CRIACAO)))
+                .build();
+    }
+
+    public QuoteEvent mappear(Quote quote, EQuoteEvent event){
+        return QuoteEvent.builder()
+                .quoteId(quote.getId())
+                .quote(quote)
+                .tipo(event)
+                .userId(quote.getCreatedByUserId())
+                .user(quote.getCreatedBy())
+                .dataHora(LocalDateTime.now())
+                .build();
+    }
 }

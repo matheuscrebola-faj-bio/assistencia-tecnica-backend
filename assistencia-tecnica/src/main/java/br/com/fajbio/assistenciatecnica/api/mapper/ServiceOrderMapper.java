@@ -79,4 +79,42 @@ public class ServiceOrderMapper {
                 .statusHistory(historias)
                 .build();
     }
+
+    public ServiceOrder mappear(Quote newQuote, ServiceOrder serviceOrder) {
+        return ServiceOrder.builder()
+                .id(serviceOrder.getId())
+                .atendimento(serviceOrder.getAtendimento())
+                .ultimoValor(serviceOrder.getUltimoValor())
+                .customer(serviceOrder.getCustomer())
+                .customerId(serviceOrder.getCustomerId())
+                .equipment(serviceOrder.getEquipment())
+                .equipmentId(serviceOrder.getEquipmentId())
+                .currentStatus(ESoStatus.VALIDAR_ORACAMENTO)
+                .assignedTo(serviceOrder.getAssignedTo())
+                .assignedToUserId(serviceOrder.getAssignedToUserId())
+                .origin(serviceOrder.getOrigin())
+                .requesterContato(serviceOrder.getRequesterContato())
+                .requesterEmail(serviceOrder.getRequesterEmail())
+                .requesterCompanyName(serviceOrder.getRequesterCompanyName())
+                .requesterAddress(serviceOrder.getRequesterAddress())
+                .productLine(serviceOrder.getProductLine())
+                .criadoEm(serviceOrder.getCriadoEm())
+                .statusHistory(serviceOrder.getStatusHistory())
+                .quotes(List.of(newQuote))
+                .build();
+    }
+
+    public SoStatusHistory mappear(ServiceOrder serviceOrder, SoStatus status, User user){
+        return SoStatusHistory.builder()
+                .serviceOrderId(serviceOrder.getId())
+                .serviceOrder(serviceOrder)
+                .fromStatusId(serviceOrder.getStatusHistory().getLast().getFromStatusId())
+                .fromStatus(serviceOrder.getStatusHistory().getLast().getFromStatus())
+                .toStatus(status)
+                .toStatusId(status.getId())
+                .changedByUserId(user.getId())
+                .changedBy(user)
+                .atualizadoEm(LocalDateTime.now())
+                .build();
+    }
 }

@@ -24,4 +24,18 @@ public class SoStatusHistoryMapper {
                 .atualizadoEm(LocalDateTime.now())
                 .build();
     }
+
+    public SoStatusHistory mappear(ServiceOrder serviceOrder, SoStatus recebimento, User user){
+        return SoStatusHistory.builder()
+                .serviceOrderId(serviceOrder.getId())
+                .serviceOrder(serviceOrder)
+                .fromStatusId(recebimento.getId())
+                .fromStatus(recebimento)
+                .toStatusId(testes.getId())
+                .toStatus(testes)
+                .changedByUserId(user.getId())
+                .changedBy(user)
+                .atualizadoEm(LocalDateTime.now())
+                .build();
+    }
 }
