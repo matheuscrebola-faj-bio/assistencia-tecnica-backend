@@ -3,6 +3,7 @@ package br.com.fajbio.assistenciatecnica.api.controller;
 import br.com.fajbio.assistenciatecnica.api.dto.RoleRes;
 import br.com.fajbio.assistenciatecnica.api.dto.UserReq;
 import br.com.fajbio.assistenciatecnica.api.dto.UserRes;
+import br.com.fajbio.assistenciatecnica.api.dto.UserUpdate;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
 import br.com.fajbio.assistenciatecnica.api.mapper.RoleMapper;
 import br.com.fajbio.assistenciatecnica.api.mapper.UserMapper;
@@ -34,7 +35,7 @@ public class UsersController {
     public ResponseEntity<List<UserRes>> listUsers(@RequestHeader Long userId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/users"));
         // lista usuários do banco com filtros/paginação.
-        List<UserRes> res = userMapper.mappear(userService.encontrarTodos());
+        List<UserRes> res = userService.encontrarTodos();
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -55,10 +56,10 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@RequestHeader Long reqId, @PathVariable Long userId, @RequestBody UserReq req){
+    public ResponseEntity<?> updateUser(@RequestHeader Long reqId, @PathVariable Long userId, @RequestBody UserUpdate update){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "PUT", "/users/id"));
-        Set<Role> roles = roleService.encontrarPeloNome(req.roles());
-        userService.atualizar(userMapper.mappear(userId, req, roles));
+        User user = userService.encontrarPeloId(userId);
+        userService.atualizar(userMapper.mappear(user, update));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -24,6 +24,7 @@ public class ServiceOrdersController {
     private final ServiceOrderService serviceOrderService;
     private final ServiceOrderMapper serviceOrderMapper;
     private final CustomerService customerService;
+    private final CustomerMapper customerMapper;
     private final EquipmentService equipmentService;
     private final SoStatusService soStatusService;
     private final SoDocumentService soDocumentService;
@@ -66,7 +67,7 @@ public class ServiceOrdersController {
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
         var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
         var service = serviceOrderService.cadastrar(serviceOrder);
-        customerService.adicionarOrdemServico(customer, service);
+        customerService.adicionarOrdemServico(customerMapper.mappear(customer, service));
 
         SoDocument document = soDocumentMapper.mappear(service);
 

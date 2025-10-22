@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.api.dto.UserRes;
 import br.com.fajbio.assistenciatecnica.domain.model.User;
 import br.com.fajbio.assistenciatecnica.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -22,8 +23,8 @@ public class UserService {
         return repository.findById(id).orElse(null);
     }
 
-    public List<User> encontrarTodos() {
-        return repository.findAll();
+    public List<UserRes> encontrarTodos() {
+        return repository.encontrarTodos();
     }
 
     public User cadastrar(User user) {

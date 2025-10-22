@@ -23,22 +23,27 @@ public class CustomerService {
         return repository.findByDocumento(documento);
     }
 
-    public Customer adicionarOrdemServico(Customer customer, ServiceOrder service) {
-        List<ServiceOrder> orders = customer.getServiceOrders();
-        orders.addLast(service);
-        return salvar(Customer.builder()
-                .id(customer.getId())
-                .nomeLegal(customer.getNomeLegal())
-                .documento(customer.getDocumento())
-                .email(customer.getEmail())
-                .ativo(customer.getAtivo())
-                .contacts(customer.getContacts())
-                .addresses(customer.getAddresses())
-                .serviceOrders(orders)
-                .build());
+    public Customer adicionarOrdemServico(Customer customer) {
+        return salvar(customer);
     }
 
     public Customer cadastrar(Customer customer) {
+        return salvar(customer);
+    }
+
+    public List<Customer> encontrarTodos() {
+        return repository.findAll();
+    }
+
+    public Customer encontrarPeloId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public Customer atualizar(Customer customer) {
+        return salvar(customer);
+    }
+
+    public Customer delecaoLogica(Customer customer) {
         return salvar(customer);
     }
 }

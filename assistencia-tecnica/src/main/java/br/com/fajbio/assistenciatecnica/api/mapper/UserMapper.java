@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.UserReq;
 import br.com.fajbio.assistenciatecnica.api.dto.UserRes;
+import br.com.fajbio.assistenciatecnica.api.dto.UserUpdate;
 import br.com.fajbio.assistenciatecnica.domain.model.Role;
 import br.com.fajbio.assistenciatecnica.domain.model.User;
 import org.springframework.stereotype.Component;
@@ -12,12 +13,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
-
-    public List<UserRes> mappear(List<User> users){
-        return users.stream()
-                .map(this::mappear)
-                .collect(Collectors.toList());
-    }
 
     public UserRes mappear(User user) {
         return UserRes.builder()
@@ -38,14 +33,14 @@ public class UserMapper {
                 .build();
     }
 
-    public User mappear(Long id, UserReq req, Set<Role> roles) {
+    public User mappear(User user, UserUpdate update) {
         return User.builder()
-                .id(id)
-                .username(req.username())
-                .passwordHash(req.passwordHash())
-                .email(req.email())
-                .ativo(true)
-                .roles(roles)
+                .id(user.getId())
+                .username(update.username())
+                .passwordHash(update.passwordHash())
+                .email(update.email())
+                .ativo(user.getAtivo())
+                .roles(user.getRoles())
                 .build();
     }
 
