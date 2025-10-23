@@ -1,20 +1,20 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
-import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactRes;
-import br.com.fajbio.assistenciatecnica.api.dto.CustomerReq;
-import br.com.fajbio.assistenciatecnica.api.dto.CustomerRes;
-import br.com.fajbio.assistenciatecnica.api.dto.CustomerUpdate;
+import br.com.fajbio.assistenciatecnica.api.dto.*;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
+import br.com.fajbio.assistenciatecnica.domain.model.CustomerAddress;
 import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
 import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class CustomerMapper {
+    private final AddressMapper addressMapper;
     public Customer mappear(CustomerReq req) {
         return Customer.builder()
                 .nomeLegal(req.nomeLegal())
@@ -113,4 +113,68 @@ public class CustomerMapper {
                 .serviceOrders(customer.getServiceOrders())
                 .build();
     }
+
+    public Customer mappear(Customer customer, CustomerAddress address) {
+        List<CustomerAddress> addresses = customer.getAddresses();
+        addresses.add(address);
+        return Customer.builder()
+                .id(customer.getId())
+                .nomeLegal(customer.getNomeLegal())
+                .documento(customer.getDocumento())
+                .email(customer.getEmail())
+                .ativo(customer.getAtivo())
+                .contacts(customer.getContacts())
+                .addresses(addresses)
+                .serviceOrders(customer.getServiceOrders())
+                .build();
+    }
+
+    public Customer mappear(Customer customer, Long contactId, CustomerContactReq req) {
+        List<CustomerContact> contacts = customer.getContacts();
+
+        // Encontra e atualiza o contato na lista
+        contacts.stream()
+                .filter(c -> c.getId().equals(contactId))
+                .findFirst()
+                .ifPresent(contact -> {
+                    contact.setEmail(req.email());
+                    contact.setTelefone(req.telefone());
+                    contact.setNome(req.nome());
+                });
+
+        return Customer.builder()
+                .id(customer.getId())
+                .nomeLegal(customer.getNomeLegal())
+                .documento(customer.getDocumento())
+                .email(customer.getEmail())
+                .ativo(customer.getAtivo())
+                .contacts(contacts)
+                .addresses(customer.getAddresses())
+                .serviceOrders(customer.getServiceOrders())
+                .build();
+    }
+
+    public Customer mappear(Customer customer, Long addressId, CustomerAddressReq req) {
+        List<CustomerAddress> addresses = customer.getAddresses();
+        addresses.stream()
+                .filter(a -> a.getId().equals(addressId))
+                .findFirst()
+                .ifPresent(address -> {
+                    address.setAddress(addressMapper.mappear(req.address()));
+                    address.setTipo(req.tipo());
+                });
+
+        return Customer.builder()
+                .id(customer.getId())
+                .nomeLegal(customer.getNomeLegal())
+                .documento(customer.getDocumento())
+                .email(customer.getEmail())
+                .ativo(customer.getAtivo())
+                .contacts(customer.getContacts())
+                .addresses(addresses)
+                .serviceOrders(customer.getServiceOrders())
+                .build();
+    }
+
+
 }

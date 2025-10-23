@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactRes;
+import br.com.fajbio.assistenciatecnica.domain.model.Customer;
 import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +26,24 @@ public class CustomerContactMapper {
                 .collect(Collectors.toList());
     }
 
-    public CustomerContact mappear(CustomerContactReq req){
+    public CustomerContact mappear(CustomerContactReq req, Customer customer){
         return CustomerContact.builder()
+                .customerId(customer.getId())
+                .customer(customer)
+                .nome(req.nome())
+                .email(req.email())
+                .telefone(req.telefone())
+                .build();
+    }
 
+    public CustomerContact mappear(Customer customer, Long contactId, CustomerContactReq req) {
+        return CustomerContact.builder()
+                .id(contactId)
+                .customerId(customer.getId())
+                .customer(customer)
+                .nome(req.nome())
+                .email(req.email())
+                .telefone(req.telefone())
                 .build();
     }
 }

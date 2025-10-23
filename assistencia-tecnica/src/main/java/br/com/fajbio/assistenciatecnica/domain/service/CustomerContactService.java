@@ -19,4 +19,12 @@ public class CustomerContactService {
     public CustomerContact cadastrar(CustomerContact contact) {
         return salvar(contact);
     }
+
+    public CustomerContact encontrarPeloId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public CustomerContact atualizar(CustomerContact contact) {
+     return salvar(contact);
+    }
 }

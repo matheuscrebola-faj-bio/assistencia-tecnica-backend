@@ -1,7 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
-import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
 import br.com.fajbio.assistenciatecnica.domain.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +44,19 @@ public class CustomerService {
 
     public Customer delecaoLogica(Customer customer) {
         return salvar(customer);
+    }
+
+    public void removerContato(Long customerId, Long contactId) {
+        var customer = encontrarPeloId(customerId);
+        // Remove da lista - o orphanRemoval = true faz a deleção automática
+        customer.getContacts().removeIf(contact -> contact.getId().equals(contactId));
+        repository.save(customer);
+    }
+
+    public void removerEndereco(Long customerId, Long addressId) {
+        var customer = encontrarPeloId(customerId);
+        // Remove da lista - o orphanRemoval = true faz a deleção automática
+        customer.getAddresses().removeIf(contact -> contact.getId().equals(addressId));
+        repository.save(customer);
     }
 }

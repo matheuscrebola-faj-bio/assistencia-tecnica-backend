@@ -1,14 +1,12 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
 import br.com.fajbio.assistenciatecnica.api.dto.*;
-import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.CustomerContactMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.CustomerMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.*;
+import br.com.fajbio.assistenciatecnica.domain.model.Address;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
+import br.com.fajbio.assistenciatecnica.domain.model.CustomerAddress;
 import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
-import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
-import br.com.fajbio.assistenciatecnica.domain.service.CustomerContactService;
-import br.com.fajbio.assistenciatecnica.domain.service.CustomerService;
+import br.com.fajbio.assistenciatecnica.domain.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +24,9 @@ public class CustomersController {
     private final CustomerService customerService;
     private final CustomerContactMapper customerContactMapper;
     private final CustomerContactService customerContactService;
+    private final AddressMapper addressMapper;
+    private final AddressService addressService;
+    private final CustomerAddressMapper customerAddressMapper;
 
     @GetMapping
     public ResponseEntity<List<CustomerRes>> listCustomers(@RequestHeader Long id){
@@ -36,7 +37,9 @@ public class CustomersController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCustomer(@RequestHeader Long userId, @RequestBody CustomerReq req){
+    public ResponseEntity<?> createCustomer(
+            @RequestHeader Long userId,
+            @RequestBody CustomerReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
         // cria cliente, contatos e endereços (transação).
         customerService.cadastrar(customerMapper.mappear(req));
@@ -44,7 +47,9 @@ public class CustomersController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerRes> getCustomerById(@RequestHeader Long userId, @PathVariable Long customerId){
+    public ResponseEntity<CustomerRes> getCustomerById(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id"));
         // detalhe do cliente.
         CustomerRes res = customerMapper.mappear(customerService.encontrarPeloId(customerId));
@@ -52,7 +57,10 @@ public class CustomersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@RequestHeader Long userId, @PathVariable Long customerId, @RequestBody CustomerUpdate update){
+    public ResponseEntity<?> updateCustomer(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @RequestBody CustomerUpdate update){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id"));
         // atualiza dados do cliente.
         Customer customer = customerService.encontrarPeloId(customerId);
@@ -61,7 +69,9 @@ public class CustomersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCustomer(@RequestHeader Long userId, @PathVariable Long customerId){
+    public ResponseEntity<?> deleteCustomer(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id"));
         // inativa/Remove cliente.
         Customer customer = customerService.encontrarPeloId(customerId);
@@ -70,7 +80,9 @@ public class CustomersController {
     }
 
     @GetMapping("/{customerId}/contacts")
-    public ResponseEntity<List<CustomerContactRes>> listCustomerContacts(@RequestHeader Long userId, @PathVariable Long customerId){
+    public ResponseEntity<List<CustomerContactRes>> listCustomerContacts(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/contacts"));
         // lista contatos do cliente.
         Customer customer = customerService.encontrarPeloId(customerId);
@@ -79,54 +91,86 @@ public class CustomersController {
     }
 
     @PostMapping("/{customerId}/contacts")
-    public ResponseEntity<?> createCustomerContact(@RequestHeader Long userId, @PathVariable Long customerId, @RequestBody CustomerContactReq req){
+    public ResponseEntity<?> createCustomerContact(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @RequestBody CustomerContactReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers/id/contacts"));
-        //TODO: adiciona contato.
+        // adiciona contato.
         Customer customer = customerService.encontrarPeloId(customerId);
-        CustomerContact customerContact = customerContactService.cadastrar(customerContactMapper.mappear(req));
+        CustomerContact customerContact = customerContactService.cadastrar(customerContactMapper.mappear(req, customer));
         customerService.atualizar(customerMapper.mappear(customer, customerContact));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @GetMapping("/{customerId}/addresses")
-//    public ResponseEntity<?> listCustomerAddresses(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/customers/id/addresses"));
-//        //TODO: lista endereços do cliente.
-//        return null;
-//    }
-//
-//    @PostMapping("/{customerId}/addresses")
-//    public ResponseEntity<?> createCustomerAddress(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/customers/id/addresses"));
-//        //TODO: adiciona endereço (e tipo).
-//        return null;
-//    }
-//
-//    @PutMapping("{customerId}/contacts/{contactId}")
-//    public ResponseEntity<?> updateCustomerContact(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/customers/id/contacts/id"));
-//        //TODO: atualiza contato.
-//        return null;
-//    }
-//
-//    @PutMapping("/{customerId}/addresses/{addressId}")
-//    public ResponseEntity<?> updateCustomerAddress(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/customers/id/address/id"));
-//        //TODO: atualiza endereço.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{customerId}/contacts/{contactId}")
-//    public ResponseEntity<?> deleteCustomerContact(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/customers/id/contacts/id"));
-//        //TODO: remove contato.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{customerId}/addresses/{addressId}")
-//    public ResponseEntity<?> deleteCustomerAddress(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/customers/id/address/id"));
-//        //TODO: remove endereço.
-//        return null;
-//    }
+    @GetMapping("/{customerId}/addresses")
+    public ResponseEntity<List<CustomerAddressRes>> listCustomerAddresses(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/addresses"));
+        // lista endereços do cliente.
+        Customer customer = customerService.encontrarPeloId(customerId);
+        List<CustomerAddressRes> res = customerAddressMapper.mappear(customer.getAddresses());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/{customerId}/addresses")
+    public ResponseEntity<?> createCustomerAddress(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @RequestBody CustomerAddressReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers/id/addresses"));
+        Customer customer = customerService.encontrarPeloId(customerId);
+        Address address = addressService.cadastrar(addressMapper.mappear(req.address()));
+        CustomerAddress customerAddress = customerAddressMapper.mappear(address, req.tipo(), customer);
+        customerService.atualizar(customerMapper.mappear(customer, customerAddress));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("{customerId}/contacts/{contactId}")
+    public ResponseEntity<?> updateCustomerContact(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @PathVariable Long contactId,
+            @RequestBody CustomerContactReq req) {
+        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id/contacts/id"));
+        Customer customer = customerService.encontrarPeloId(customerId);
+        // atualiza o contato dentro da lista
+        customerService.atualizar(customerMapper.mappear(customer, contactId, req));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{customerId}/addresses/{addressId}")
+    public ResponseEntity<?> updateCustomerAddress(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @PathVariable Long addressId,
+            @RequestBody CustomerAddressReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id/address/id"));
+        // atualiza endereço.
+        Customer customer = customerService.encontrarPeloId(customerId);
+        customerService.atualizar(customerMapper.mappear(customer, addressId, req));
+        return null;
+    }
+
+    @DeleteMapping("/{customerId}/contacts/{contactId}")
+    public ResponseEntity<?> deleteCustomerContact(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @PathVariable Long contactId) {
+
+        accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id/contacts/id"));
+        customerService.removerContato(customerId, contactId);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    @DeleteMapping("/{customerId}/addresses/{addressId}")
+    public ResponseEntity<?> deleteCustomerAddress(
+            @RequestHeader Long userId,
+            @PathVariable Long customerId,
+            @PathVariable Long addressId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id/address/id"));
+        customerService.removerEndereco(customerId, addressId);
+        return ResponseEntity.noContent().build();
+    }
 }
