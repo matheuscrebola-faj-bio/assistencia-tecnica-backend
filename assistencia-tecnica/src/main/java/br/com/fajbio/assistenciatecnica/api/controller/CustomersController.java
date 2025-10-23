@@ -150,7 +150,7 @@ public class CustomersController {
         // atualiza endereço.
         Customer customer = customerService.encontrarPeloId(customerId);
         customerService.atualizar(customerMapper.mappear(customer, addressId, req));
-        return null;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{customerId}/contacts/{contactId}")
@@ -161,7 +161,7 @@ public class CustomersController {
 
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id/contacts/id"));
         customerService.removerContato(customerId, contactId);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{customerId}/addresses/{addressId}")
@@ -171,6 +171,6 @@ public class CustomersController {
             @PathVariable Long addressId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id/address/id"));
         customerService.removerEndereco(customerId, addressId);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
