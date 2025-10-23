@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SoStatusService {
@@ -23,5 +25,9 @@ public class SoStatusService {
 
     public SoStatus encontrarPeloNome(ESoStatus eSoStatus) {
         return repository.findByNome(eSoStatus);
+    }
+
+    public List<SoStatus> encontrarTodos() {
+        return repository.findAll();
     }
 }
