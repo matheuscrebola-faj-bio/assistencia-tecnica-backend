@@ -117,4 +117,27 @@ public class ServiceOrderMapper {
                 .atualizadoEm(LocalDateTime.now())
                 .build();
     }
+
+    public ServiceOrder mappear(ServiceOrder serviceOrder, WorkOrder workOrder) {
+        List<WorkOrder> workOrders = serviceOrder.getWorkOrders();
+        workOrders.add(workOrder);
+        return ServiceOrder.builder()
+                .id(serviceOrder.getId())
+                .atendimento(serviceOrder.getAtendimento())
+                .customerId(serviceOrder.getCustomerId())
+                .customer(serviceOrder.getCustomer())
+                .equipmentId(serviceOrder.getEquipmentId())
+                .equipment(serviceOrder.getEquipment())
+                .currentStatus(ESoStatus.LIBERADO_REPARO)
+                .origin(serviceOrder.getOrigin())
+                .requesterContato(serviceOrder.getRequesterContato())
+                .requesterEmail(serviceOrder.getRequesterEmail())
+                .requesterCompanyName(serviceOrder.getRequesterCompanyName())
+                .requesterAddress(serviceOrder.getRequesterAddress())
+                .productLine(serviceOrder.getProductLine())
+                .criadoEm(serviceOrder.getCriadoEm())
+                .statusHistory(serviceOrder.getStatusHistory())
+                .workOrders(workOrders)
+                .build();
+    }
 }

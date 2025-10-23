@@ -45,6 +45,10 @@ public class ServiceOrdersController {
     private final QuoteService quoteService;
     private final ServiceService serviceService;
     private final ServiceMapper serviceMapper;
+    private final WorkOrderMapper workOrderMapper;
+    private final WorkOrderService workOrderService;
+    private final WorkLogMapper workLogMapper;
+    private final WorkLogService workLogService;
 
 //    @GetMapping
 //    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
@@ -294,13 +298,18 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-//    @PostMapping("/{id}/work-orders")
-//    public ResponseEntity<?> createWorkOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/work-orders"));
-//        //TODO: cria ordem de trabalho (início do reparo).
-//        return null;
-//    }
-//
+    @PostMapping("/{id}/work-orders")
+    public ResponseEntity<?> createWorkOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody WorkOrderReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/work-orders"));
+        //TODO: cria ordem de trabalho (início do reparo).
+        ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        WorkOrder workOrder = workOrderService.cadastrar(workOrderMapper.mappear(serviceOrder, req));
+        WorkLog workLog = workLogService.cadastrar(workLogMapper.mappear(workOrder, req.worklog()));
+        WorkOrder newWorkOrder = workOrderService.cadastrar(workOrderMapper.mappear(workOrder, workLog));
+        serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, newWorkOrder));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
 //    @GetMapping("/{id}/documents")
 //    public ResponseEntity<?> listDocuments(@RequestHeader Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/documents"));
@@ -342,14 +351,15 @@ public class ServiceOrdersController {
 //        //TODO: lista envios da OS.
 //        return null;
 //    }
-//
-//    @PostMapping("/{id}/shipments")
-//    public ResponseEntity<?> createShipment(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
-//        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
-//        return null;
-//    }
-//
+
+    @PostMapping("/{id}/shipments")
+    public ResponseEntity<?> createShipment(@RequestHeader Long id){
+        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
+        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
+
+        return null;
+    }
+
 //    @GetMapping("/{id}/notifications")
 //    public ResponseEntity<?> listNotifications(@RequestHeader Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/notifications"));

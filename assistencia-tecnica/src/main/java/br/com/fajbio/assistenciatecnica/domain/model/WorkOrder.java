@@ -37,7 +37,7 @@ public class WorkOrder {
     @JoinColumn(name = "tecnico_id", insertable = false, updatable = false)
     private User tecnico;
 
-    @Column(name = "data_inicio")
+    @Column(name = "data_inicio", updatable = false, nullable = false)
     private LocalDateTime dataInicio;
 
     @Column(name = "data_fim")
