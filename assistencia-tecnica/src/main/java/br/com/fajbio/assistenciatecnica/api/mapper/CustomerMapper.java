@@ -71,7 +71,7 @@ public class CustomerMapper {
 
     public Customer mappear(Customer customer, ServiceOrder service) {
         List<ServiceOrder> orders = customer.getServiceOrders();
-        orders.addLast(service);
+        orders.add(service);
         return Customer.builder()
                 .id(customer.getId())
                 .nomeLegal(customer.getNomeLegal())

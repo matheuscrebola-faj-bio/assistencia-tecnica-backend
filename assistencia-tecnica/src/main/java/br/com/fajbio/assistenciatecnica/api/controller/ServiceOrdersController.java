@@ -32,7 +32,7 @@ public class ServiceOrdersController {
     private final NotificationMapper notificationMapper;
     private final NotificationService notificationService;
     private final DocTemplateFillService docTemplateFillService;
-    private final MailService mailService;
+//    private final MailService mailService;
     private final DocumentService documentService;
     private final SoStatusHistoryMapper soStatusHistoryMapper;
     private final SoStatusHistoryService soStatusHistoryService;
@@ -64,45 +64,45 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/public")
-    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
-        // 1) Cria OS e registros relacionados
-        var customer = customerService.encontrarPeloDocumento(req.cnpj());
-        var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
-        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
-        var service = serviceOrderService.cadastrar(serviceOrder);
-        customerService.adicionarOrdemServico(customerMapper.mappear(customer, service));
-
-        SoDocument document = soDocumentMapper.mappear(service);
-
-        // 2) Preenche DOCX (telefone = req.contato(), modelo = tipoDoc)
-        Path docx = docTemplateFillService.preencherServiceOrder(
-                req,
-                req.contato(),                    // telefone
-                document.getTipoDoc().toString() // modelo do documento
-        );
-
-        // 3) Converte para PDF
-        Path pdf = documentService.gerarPdfFromDocx(docx);
-
-        // 4) Persiste metadados do documento com o caminho físico do PDF
-        soDocumentService.cadastrar(soDocumentMapper.mappear(document, pdf));
-
-        // 5) Cria notificação (como você já faz)
-        notificationService.cadastrar(notificationMapper.mappear(service, req));
-
-        // 6) Envia e-mail para o contato informado no formulário
-        String assunto = "Instruções de envio do equipamento — Ordem de Serviço";
-        String corpoHtml = EmailBodies.instrucoesEnvioHtml();
-        mailService.enviarComAnexo(
-                req.email(),     // destinatário
-                assunto,
-                corpoHtml,
-                pdf              // anexo PDF
-        );
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+//    @PostMapping("/public")
+//    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
+//        // 1) Cria OS e registros relacionados
+//        var customer = customerService.encontrarPeloDocumento(req.cnpj());
+//        var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
+//        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
+//        var service = serviceOrderService.cadastrar(serviceOrder);
+//        customerService.adicionarOrdemServico(customerMapper.mappear(customer, service));
+//
+//        SoDocument document = soDocumentMapper.mappear(service);
+//
+//        // 2) Preenche DOCX (telefone = req.contato(), modelo = tipoDoc)
+//        Path docx = docTemplateFillService.preencherServiceOrder(
+//                req,
+//                req.contato(),                    // telefone
+//                document.getTipoDoc().toString() // modelo do documento
+//        );
+//
+//        // 3) Converte para PDF
+//        Path pdf = documentService.gerarPdfFromDocx(docx);
+//
+//        // 4) Persiste metadados do documento com o caminho físico do PDF
+//        soDocumentService.cadastrar(soDocumentMapper.mappear(document, pdf));
+//
+//        // 5) Cria notificação (como você já faz)
+//        notificationService.cadastrar(notificationMapper.mappear(service, req));
+//
+//        // 6) Envia e-mail para o contato informado no formulário
+//        String assunto = "Instruções de envio do equipamento — Ordem de Serviço";
+//        String corpoHtml = EmailBodies.instrucoesEnvioHtml();
+//        mailService.enviarComAnexo(
+//                req.email(),     // destinatário
+//                assunto,
+//                corpoHtml,
+//                pdf              // anexo PDF
+//        );
+//
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
 //
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getServiceOrder(@RequestHeader Long id){

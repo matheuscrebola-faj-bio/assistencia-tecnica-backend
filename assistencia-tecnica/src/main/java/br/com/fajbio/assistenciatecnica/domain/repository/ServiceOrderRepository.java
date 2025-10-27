@@ -13,8 +13,5 @@ import java.util.List;
 @Repository
 public interface ServiceOrderRepository extends JpaRepository<ServiceOrder,Long> {
 
-    @Query("SELECT MAX(a.valor) FROM Atendimento a WHERE a.ano = :ano AND a.mes = :mes")
-    Short findUltimoValorOrderByUltimoValorDesc(@Param("ano") int ano, @Param("mes") int mes);
-
     List<ServiceOrdersRes> findAllByCurrentStatus(ESoStatus status);
 }

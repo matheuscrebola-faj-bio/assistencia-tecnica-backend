@@ -21,6 +21,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-assistencia_tecnica_db}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-assistenciatecnica}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-assistencia@tecnica2025}
+      # 191.252.111.193
 
       # Outros toggles
       SHOW_SQL: ${SHOW_SQL:-true}

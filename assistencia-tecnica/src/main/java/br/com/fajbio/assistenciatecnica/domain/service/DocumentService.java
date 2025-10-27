@@ -24,35 +24,35 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DocumentService {
 
-    private final ResourceLoader resourceLoader;
-
-    @Value("${docs.template-path}")
-    private String templatePath;
-
-    @Value("${docs.output-dir}")
-    private String outputDir;
-
-    /**
-     * Gera PDF preenchendo variáveis no DOCX template.
-     * @param docxPath mapa ex.: "empresa"->"ACME", "cnpj"->"00.000.000/0001-00"
-     * @return Path do PDF salvo
-     */
-    public Path gerarPdfFromDocx(Path docxPath) throws Exception {
-        if (docxPath == null || !Files.exists(docxPath)) {
-            throw new IllegalArgumentException("DOCX inexistente: " + docxPath);
-        }
-
-        var pkg = WordprocessingMLPackage.load(docxPath.toFile());
-        var fo = Docx4J.createFOSettings();
-        fo.setWmlPackage(pkg);
-
-        Files.createDirectories(Paths.get(outputDir));
-        String outName = docxPath.getFileName().toString().replaceAll("\\.docx$", "") + ".pdf";
-        Path pdfPath = Paths.get(outputDir, outName);
-
-        try (OutputStream os = new FileOutputStream(pdfPath.toFile())) {
-            Docx4J.toFO(fo, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
-        }
-        return pdfPath;
-    }
+//    private final ResourceLoader resourceLoader;
+//
+//    @Value("${docs.template-path}")
+//    private String templatePath;
+//
+//    @Value("${docs.output-dir}")
+//    private String outputDir;
+//
+//    /**
+//     * Gera PDF preenchendo variáveis no DOCX template.
+//     * @param docxPath mapa ex.: "empresa"->"ACME", "cnpj"->"00.000.000/0001-00"
+//     * @return Path do PDF salvo
+//     */
+//    public Path gerarPdfFromDocx(Path docxPath) throws Exception {
+//        if (docxPath == null || !Files.exists(docxPath)) {
+//            throw new IllegalArgumentException("DOCX inexistente: " + docxPath);
+//        }
+//
+//        var pkg = WordprocessingMLPackage.load(docxPath.toFile());
+//        var fo = Docx4J.createFOSettings();
+//        fo.setWmlPackage(pkg);
+//
+//        Files.createDirectories(Paths.get(outputDir));
+//        String outName = docxPath.getFileName().toString().replaceAll("\\.docx$", "") + ".pdf";
+//        Path pdfPath = Paths.get(outputDir, outName);
+//
+//        try (OutputStream os = new FileOutputStream(pdfPath.toFile())) {
+//            Docx4J.toFO(fo, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
+//        }
+//        return pdfPath;
+//    }
 }

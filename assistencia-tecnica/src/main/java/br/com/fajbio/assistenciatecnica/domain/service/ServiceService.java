@@ -12,6 +12,6 @@ public class ServiceService {
     private final ServiceRepository repository;
 
     public List<br.com.fajbio.assistenciatecnica.domain.model.Service> encontrarTodosPeloNome(List<String> nomes) {
-        return repository.findAllByName(nomes);
+        return repository.findAllByNome(String.valueOf(nomes));
     }
 }

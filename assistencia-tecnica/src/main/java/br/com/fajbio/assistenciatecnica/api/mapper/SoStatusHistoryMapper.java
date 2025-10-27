@@ -31,8 +31,6 @@ public class SoStatusHistoryMapper {
                 .serviceOrder(serviceOrder)
                 .fromStatusId(recebimento.getId())
                 .fromStatus(recebimento)
-                .toStatusId(testes.getId())
-                .toStatus(testes)
                 .changedByUserId(user.getId())
                 .changedBy(user)
                 .atualizadoEm(LocalDateTime.now())

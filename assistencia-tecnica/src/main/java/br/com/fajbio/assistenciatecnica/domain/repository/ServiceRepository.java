@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends JpaRepository<Service,Long> {
 
-    @Query("SELECT s FROM Service s WHERE s.name IN :nomes")
-    List<Service> findAllByName(@Param("nomes") List<String> nomes);
+    List<Service> findAllByNome(String nome);
 }
