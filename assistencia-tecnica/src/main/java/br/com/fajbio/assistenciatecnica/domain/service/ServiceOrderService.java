@@ -1,6 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
-import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
+//import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
@@ -28,7 +28,7 @@ public class ServiceOrderService {
         return repository.findById(id).orElse(null);
     }
 
-    public List<ServiceOrdersRes> encontrarPeloStatusAtual(ESoStatus status) {
-        return repository.findAllByCurrentStatus(status);
-    }
+//    public List<ServiceOrdersRes> encontrarPeloStatusAtual(ESoStatus status) {
+//        return repository.findAllByCurrentStatus(status);
+//    }
 }

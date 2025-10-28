@@ -6,7 +6,7 @@ import br.com.fajbio.assistenciatecnica.domain.model.Equipment;
 import lombok.Builder;
 
 @Builder
-public class ServiceOrdersRes {
+public class ServiceOrderRes {
     private Long id;
     private Equipment equipment;
     private ESoStatus currentStatus;

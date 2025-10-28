@@ -57,12 +57,12 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-    @GetMapping
-    public ResponseEntity<?> listServiceOrders(@RequestHeader Long userId, ESoStatus eSoStatus){
-        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
-        List<ServiceOrdersRes> res = serviceOrderService.encontrarPeloStatusAtual(eSoStatus);
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<?> listServiceOrders(@RequestHeader Long userId, ESoStatus eSoStatus){
+//        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
+//        //List<ServiceOrdersRes> res = serviceOrderService.encontrarPeloStatusAtual(eSoStatus);
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
 
 //    @PostMapping("/public")
 //    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
