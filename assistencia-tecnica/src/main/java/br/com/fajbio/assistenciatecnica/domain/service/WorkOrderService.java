@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.domain.model.WorkLog;
 import br.com.fajbio.assistenciatecnica.domain.model.WorkOrder;
 import br.com.fajbio.assistenciatecnica.domain.repository.WorkOrderRepository;
 import jakarta.transaction.Transactional;
@@ -18,5 +19,11 @@ public class WorkOrderService {
 
     public WorkOrder cadastrar(WorkOrder workOrder) {
         return salvar(workOrder);
+    }
+
+    @Transactional
+    public WorkOrder adicionarWorkLog(WorkOrder workOrder, WorkLog workLog) {
+        workOrder.getLogs().add(workLog);
+        return workOrder;
     }
 }

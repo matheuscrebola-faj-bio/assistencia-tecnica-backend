@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.domain.enums;
 
 public enum ESoStatus {
     AGUARDANDO_RECEBIMENTO,
+    RECEBIDO,
     TESTES_INICIAIS,
     //TODO: ambos são orçamento
     VALIDAR_ORACAMENTO, //já enviou o orçamento

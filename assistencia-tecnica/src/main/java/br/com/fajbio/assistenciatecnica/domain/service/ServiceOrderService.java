@@ -1,7 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
-import br.com.fajbio.assistenciatecnica.api.dto.SoIntakeReq;
-import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
+import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,27 @@ public class ServiceOrderService {
     public ServiceOrder encontrarPeloId(Long id) {
         return repository.findById(id).orElseThrow();
     }
+
+    @Transactional
+    public void registrarChegada(ServiceOrder serviceOrder, SoStatusHistory statusHistory) {
+        serviceOrder.getStatusHistory().add(statusHistory);
+    }
+
+    @Transactional
+    public void adicionarQuote(Quote quote, ServiceOrder serviceOrder) {
+        serviceOrder.getQuotes().add(quote);
+    }
+
+    @Transactional
+    public void atualizarStatusHistory(ServiceOrder serviceOrder, SoStatusHistory statusHistory) {
+        serviceOrder.getStatusHistory().add(statusHistory);
+    }
+
+    @Transactional
+    public void adicionarWorkOrder(ServiceOrder serviceOrder, WorkOrder workOrder) {
+        serviceOrder.getWorkOrders().add(workOrder);
+    }
+
 
 //    @Transactional
 //    public ServiceOrder registrarChegada(Long id, SoIntakeReq req) {

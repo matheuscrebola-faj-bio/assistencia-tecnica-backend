@@ -27,6 +27,7 @@ public class ServiceOrdersController {
     private final CustomerMapper customerMapper;
     private final EquipmentService equipmentService;
     private final SoStatusService soStatusService;
+    private final SoStatusMapper soStatusMapper;
     private final SoDocumentService soDocumentService;
     private final SoDocumentMapper soDocumentMapper;
     private final NotificationMapper notificationMapper;
@@ -175,8 +176,11 @@ public class ServiceOrdersController {
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
         //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
         var serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
-        SoIntake intake = soIntakeService.cadastrar(soIntakeMapper.mappear(req, serviceOrder));
-        serviceOrderService.registrarChegada(serviceOrder);
+        User user = userService.encontrarPeloId(userId);
+        soIntakeService.cadastrar(soIntakeMapper.mappear(req, serviceOrder));
+        SoStatus soStatus = soStatusService.cadastrar(soStatusMapper.mappear(ESoStatus.RECEBIDO));
+        SoStatusHistory statusHistory = soStatusHistoryService.cadastrar(soStatusHistoryMapper.mappear(serviceOrder, soStatus, user));
+        serviceOrderService.registrarChegada(serviceOrder,statusHistory);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 //
@@ -290,10 +294,10 @@ public class ServiceOrdersController {
         List<String> serviceNames = serviceMapper.mappear(req.quoteItemReq());
         List<Service> service = serviceService.encontrarTodosPeloNome(serviceNames);
         List<QuoteItem> quoteItem = quoteService.cadastrar(quoteMapper.mappear(quote,req,service));
-        Quote newQuote = quoteService.cadastrar(quoteMapper.mappear(quoteItem, quote));
-        ServiceOrder newServiceOrder = serviceOrderMapper.mappear(newQuote, serviceOrder);
+        quoteService.adicionarItems(quoteItem, quote);
+        serviceOrderService.adicionarQuote(quote, serviceOrder);
         SoStatus soStatus = soStatusService.encontrarPeloNome(ESoStatus.VALIDAR_ORACAMENTO);
-        serviceOrderService.cadastrar(serviceOrderMapper.mappear(newServiceOrder, soStatusHistoryMapper.mappear(newServiceOrder, soStatus, user)));
+        serviceOrderService.atualizarStatusHistory(serviceOrder, soStatusHistoryMapper.mappear(serviceOrder, soStatus, user));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 //
@@ -311,8 +315,7 @@ public class ServiceOrdersController {
         ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
         WorkOrder workOrder = workOrderService.cadastrar(workOrderMapper.mappear(serviceOrder, req));
         WorkLog workLog = workLogService.cadastrar(workLogMapper.mappear(workOrder, req.worklog()));
-        WorkOrder newWorkOrder = workOrderService.cadastrar(workOrderMapper.mappear(workOrder, workLog));
-        serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, newWorkOrder));
+        serviceOrderService.adicionarWorkOrder(serviceOrder, workOrderService.adicionarWorkLog(workOrder,workLog));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

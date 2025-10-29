@@ -33,4 +33,9 @@ public class QuoteService {
     public List<QuoteItem> cadastrar(List<QuoteItem> quotes) {
         return salvar(quotes);
     }
+
+    @Transactional
+    public void adicionarItems(List<QuoteItem> quoteItens, Quote quote) {
+        quote.getItems().addAll(quoteItens);
+    }
 }
