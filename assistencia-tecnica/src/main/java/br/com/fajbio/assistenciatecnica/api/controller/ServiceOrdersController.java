@@ -64,6 +64,16 @@ public class ServiceOrdersController {
 //        return new ResponseEntity<>(res, HttpStatus.OK);
 //    }
 
+    @PostMapping
+    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
+        var customer = customerService.encontrarPeloDocumento(req.cnpj());
+        var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
+        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
+        var service = serviceOrderService.cadastrar(serviceOrder);
+        customerService.adicionarOrdemServico(customerMapper.mappear(customer, service));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
 //    @PostMapping("/public")
 //    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
 //        // 1) Cria OS e registros relacionados
@@ -164,13 +174,9 @@ public class ServiceOrdersController {
     public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody SoIntakeReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
         //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
-        ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
-        var recebimento = soStatusService.encontrarPeloNome(ESoStatus.AGUARDANDO_RECEBIMENTO);
-        var testes = soStatusService.encontrarPeloNome(ESoStatus.TESTES_INICIAIS);
-        User user = userService.encontrarPeloId(userId);
-        SoStatusHistory soStatusHistory = soStatusHistoryService.cadastrar(soStatusHistoryMapper.mappear(serviceOrder, recebimento, testes, user));
-        var service = serviceOrderService.cadastrar(serviceOrderMapper.mappear(serviceOrder, soStatusHistory));
-        soIntakeService.cadastrar(soIntakeMapper.mappear(req, service));
+        var serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        SoIntake intake = soIntakeService.cadastrar(soIntakeMapper.mappear(req, serviceOrder));
+        serviceOrderService.registrarChegada(serviceOrder);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 //

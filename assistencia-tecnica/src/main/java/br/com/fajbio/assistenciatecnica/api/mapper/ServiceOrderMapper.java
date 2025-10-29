@@ -1,141 +1,56 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
-//import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
-//import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrdersRes;
-//import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
+import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
-import br.com.fajbio.assistenciatecnica.domain.model.*;
+import br.com.fajbio.assistenciatecnica.domain.model.Customer;
+import br.com.fajbio.assistenciatecnica.domain.model.Equipment;
+import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-//import java.time.LocalDate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ServiceOrderMapper {
     private final ServiceOrderRepository repository;
 
-//    public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment) {
-//        return ServiceOrder.builder()
-//                .atendimento(atendimento().toString())
-//                .customerId(customer.getId())
-//                .customer(customer)
-//                .equipmentId(equipment.getId())
-//                .equipment(equipment)
-//                .currentStatus(ESoStatus.AGUARDANDO_RECEBIMENTO)
-//                .origin(EOrigin.WEB_FORM)
-//                .requesterContato(req.contato())
-//                .requesterEmail(req.email())
-//                .requesterCompanyName(req.empresa())
-//                .requesterAddress(req.endereco())
-//                .productLine(req.produto())
-//                .criadoEm(LocalDateTime.now())
-//                .build();
-//    }
-
-//    protected StringBuilder atendimento() {
-//        int ano = LocalDate.now().getYear();
-//        int mes = LocalDate.now().getMonthValue();
-//
-//        // Busca o último registro (pode retornar null no início do mês)
-//        Short ultimoValor = repository.findUltimoValorOrderByUltimoValor(mes, ano);
-//        short proximoValor;
-//
-//        if (ultimoValor == null) {
-//            // Primeiro atendimento do mês
-//            proximoValor = 0;
-//        } else {
-//            // Incrementa dentro do mesmo mês
-//            proximoValor = (short) (ultimoValor + 1);
-//        }
-//
-//        // Formata o número com 3 dígitos (000, 001, ...)
-//        String codigo = String.format("%d%02d%03d", ano, mes, proximoValor);
-//
-//        return new StringBuilder(codigo);
-//    }
-
-    public ServiceOrder mappear(ServiceOrder serviceOrder, SoStatusHistory soStatusHistory) {
-        List<SoStatusHistory> historias = serviceOrder.getStatusHistory();
-        historias.add(soStatusHistory);
+    public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment) {
         return ServiceOrder.builder()
-                .id(serviceOrder.getId())
-                .atendimento(serviceOrder.getAtendimento())
-                .customerId(serviceOrder.getCustomerId())
-                .customer(serviceOrder.getCustomer())
-                .equipmentId(serviceOrder.getEquipmentId())
-                .equipment(serviceOrder.getEquipment())
-                .currentStatus(ESoStatus.TESTES_INICIAIS)
-                .origin(serviceOrder.getOrigin())
-                .requesterContato(serviceOrder.getRequesterContato())
-                .requesterEmail(serviceOrder.getRequesterEmail())
-                .requesterCompanyName(serviceOrder.getRequesterCompanyName())
-                .requesterAddress(serviceOrder.getRequesterAddress())
-                .productLine(serviceOrder.getProductLine())
-                .criadoEm(serviceOrder.getCriadoEm())
-                .statusHistory(historias)
+                .atendimento(criarAtentimento().toString())
+                .customerId(customer.getId())
+                .customer(customer)
+                .equipmentId(equipment.getId())
+                .equipment(equipment)
+                .currentStatus(ESoStatus.AGUARDANDO_RECEBIMENTO)
+                .origin(EOrigin.WEB_FORM)
+                .requesterContato(req.contato())
+                .requesterEmail(req.email())
+                .requesterCompanyName(req.empresa())
+                .requesterAddress(req.endereco())
+                .productLine(req.produto())
+                .criadoEm(LocalDateTime.now())
                 .build();
     }
 
-    public ServiceOrder mappear(Quote newQuote, ServiceOrder serviceOrder) {
-        return ServiceOrder.builder()
-                .id(serviceOrder.getId())
-                .atendimento(serviceOrder.getAtendimento())
-                .ultimoValor(serviceOrder.getUltimoValor())
-                .customer(serviceOrder.getCustomer())
-                .customerId(serviceOrder.getCustomerId())
-                .equipment(serviceOrder.getEquipment())
-                .equipmentId(serviceOrder.getEquipmentId())
-                .currentStatus(ESoStatus.VALIDAR_ORACAMENTO)
-                .assignedTo(serviceOrder.getAssignedTo())
-                .assignedToUserId(serviceOrder.getAssignedToUserId())
-                .origin(serviceOrder.getOrigin())
-                .requesterContato(serviceOrder.getRequesterContato())
-                .requesterEmail(serviceOrder.getRequesterEmail())
-                .requesterCompanyName(serviceOrder.getRequesterCompanyName())
-                .requesterAddress(serviceOrder.getRequesterAddress())
-                .productLine(serviceOrder.getProductLine())
-                .criadoEm(serviceOrder.getCriadoEm())
-                .statusHistory(serviceOrder.getStatusHistory())
-                .quotes(List.of(newQuote))
-                .build();
-    }
-
-    public SoStatusHistory mappear(ServiceOrder serviceOrder, SoStatus status, User user){
-        return SoStatusHistory.builder()
-                .serviceOrderId(serviceOrder.getId())
-                .serviceOrder(serviceOrder)
-                .toStatus(status)
-                .toStatusId(status.getId())
-                .changedByUserId(user.getId())
-                .changedBy(user)
-                .atualizadoEm(LocalDateTime.now())
-                .build();
-    }
-
-    public ServiceOrder mappear(ServiceOrder serviceOrder, WorkOrder workOrder) {
-        List<WorkOrder> workOrders = serviceOrder.getWorkOrders();
-        workOrders.add(workOrder);
-        return ServiceOrder.builder()
-                .id(serviceOrder.getId())
-                .atendimento(serviceOrder.getAtendimento())
-                .customerId(serviceOrder.getCustomerId())
-                .customer(serviceOrder.getCustomer())
-                .equipmentId(serviceOrder.getEquipmentId())
-                .equipment(serviceOrder.getEquipment())
-                .currentStatus(ESoStatus.LIBERADO_REPARO)
-                .origin(serviceOrder.getOrigin())
-                .requesterContato(serviceOrder.getRequesterContato())
-                .requesterEmail(serviceOrder.getRequesterEmail())
-                .requesterCompanyName(serviceOrder.getRequesterCompanyName())
-                .requesterAddress(serviceOrder.getRequesterAddress())
-                .productLine(serviceOrder.getProductLine())
-                .criadoEm(serviceOrder.getCriadoEm())
-                .statusHistory(serviceOrder.getStatusHistory())
-                .workOrders(workOrders)
-                .build();
+    protected StringBuilder criarAtentimento() {
+        int ano = LocalDate.now().getYear();
+        int mes = LocalDate.now().getMonthValue();
+        // Busca o último registro (pode retornar null no início do mês)
+        Short ultimoValor = repository.findUltimoValor();
+        short proximoValor;
+        if (ultimoValor == null) {
+            // Primeiro atendimento do mês
+            proximoValor = 0;
+        } else {
+            // Incrementa dentro do mesmo mês
+            proximoValor = (short) (ultimoValor + 1);
+        }
+        // Formata o número com 3 dígitos (000, 001, ...)
+        String codigo = String.format("%d%02d%03d", ano, mes, proximoValor);
+        return new StringBuilder(codigo);
     }
 }

@@ -43,7 +43,7 @@ public class CalibrationsController {
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/calibrations/id"));
         //atualiza calibração (datas/certificado).
         Calibration calibration = calibrationService.encontrarPeloId(calibrationId);
-        calibrationService.atualizar(calibrationMapper.mapear(req, calibration));
+        calibrationService.atualizar(req, calibration);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
