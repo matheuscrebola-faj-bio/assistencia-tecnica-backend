@@ -300,14 +300,14 @@ public class ServiceOrdersController {
         serviceOrderService.atualizarStatusHistory(serviceOrder, soStatusHistoryMapper.mappear(serviceOrder, soStatus, user));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-//
-//    @GetMapping("/{id}/work-orders")
-//    public ResponseEntity<?> listWorkOrders(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/work-orders"));
-//        //TODO: lista ordens de trabalho da OS.
-//        return null;
-//    }
-//
+
+    @GetMapping("/{id}/work-orders")
+    public ResponseEntity<List<WorkOrderRes>> listWorkOrders(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/work-orders"));
+        List<WorkOrderRes> res = workOrderMapper.mappear(serviceOrderService.encontrarWorkOrders(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/work-orders")
     public ResponseEntity<?> createWorkOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody WorkOrderReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/work-orders"));
@@ -360,14 +360,14 @@ public class ServiceOrdersController {
 //        //TODO: lista envios da OS.
 //        return null;
 //    }
-
-    @PostMapping("/{id}/shipments")
-    public ResponseEntity<?> createShipment(@RequestHeader Long id){
-        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
-        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
-
-        return null;
-    }
+//
+//    @PostMapping("/{id}/shipments")
+//    public ResponseEntity<?> createShipment(@RequestHeader Long id){
+//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
+//        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
+//
+//        return null;
+//    }
 
 //    @GetMapping("/{id}/notifications")
 //    public ResponseEntity<?> listNotifications(@RequestHeader Long id){

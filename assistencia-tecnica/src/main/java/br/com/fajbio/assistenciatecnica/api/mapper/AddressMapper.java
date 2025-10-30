@@ -34,4 +34,15 @@ public class AddressMapper {
                 .build();
     }
 
+    public void atualizar(Address address, AddressReq req) {
+        address.setRua(req.rua());
+        address.setNumero(req.numero());
+        address.setComplemento(req.complemento());
+        address.setBairro(req.bairro());
+        address.setCidade(req.cidade());
+        address.setUf(req.uf());
+        address.setCep(req.cep());
+        address.setPais(req.pais());
+    }
+
 }

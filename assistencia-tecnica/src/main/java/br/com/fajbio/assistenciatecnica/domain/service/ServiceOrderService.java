@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ServiceOrderService {
@@ -42,6 +44,11 @@ public class ServiceOrderService {
     @Transactional
     public void adicionarWorkOrder(ServiceOrder serviceOrder, WorkOrder workOrder) {
         serviceOrder.getWorkOrders().add(workOrder);
+    }
+
+    public List<WorkOrder> encontrarWorkOrders(Long serviceOrderId) {
+        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+        return serviceOrder.getWorkOrders();
     }
 
 

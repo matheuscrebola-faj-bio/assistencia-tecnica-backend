@@ -1,6 +1,14 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.api.dto.AddressReq;
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressReq;
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactReq;
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerUpdate;
+import br.com.fajbio.assistenciatecnica.api.mapper.AddressMapper;
+import br.com.fajbio.assistenciatecnica.domain.model.Address;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
+import br.com.fajbio.assistenciatecnica.domain.model.CustomerAddress;
+import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
 import br.com.fajbio.assistenciatecnica.domain.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository repository;
+    private final AddressMapper addressMapper;
 
     @Transactional
     protected Customer salvar(Customer customer){
@@ -38,14 +47,6 @@ public class CustomerService {
         return repository.findById(id).orElse(null);
     }
 
-    public Customer atualizar(Customer customer) {
-        return salvar(customer);
-    }
-
-    public Customer delecaoLogica(Customer customer) {
-        return salvar(customer);
-    }
-
     public void removerContato(Long customerId, Long contactId) {
         var customer = encontrarPeloId(customerId);
         // Remove da lista - o orphanRemoval = true faz a deleção automática
@@ -59,4 +60,57 @@ public class CustomerService {
         customer.getAddresses().removeIf(contact -> contact.getId().equals(addressId));
         repository.save(customer);
     }
+
+    @Transactional
+    public void atualizar(Long customerId, CustomerUpdate update) {
+        Customer customer = encontrarPeloId(customerId);
+        customer.setNomeLegal(update.nomeLegal());
+        customer.setDocumento(update.documento());
+        customer.setEmail(customer.getEmail());
+    }
+
+    @Transactional
+    public void delecaoLogica(Long customerId) {
+        Customer customer = encontrarPeloId(customerId);
+        customer.setAtivo(false);
+    }
+
+    @Transactional
+    public void atualizar(Customer customer, CustomerContact customerContact) {
+        customer.getContacts().add(customerContact);
+    }
+
+    @Transactional
+    public void atualizar(Customer customer, CustomerAddress customerAddress) {
+        customer.getAddresses().add(customerAddress);
+    }
+
+    @Transactional
+    public void atualizar(Long customerId, Long contactId, CustomerContactReq req) {
+        Customer customer = encontrarPeloId(customerId);
+
+        CustomerContact contact = customer.getContacts().stream()
+                .filter(c -> c.getId().equals(contactId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Contato não encontrado"));
+
+        // Atualizar os campos
+        contact.setNome(req.nome());
+        contact.setEmail(req.email());
+        contact.setTelefone(req.telefone());
+    }
+
+    @Transactional
+    public void atualizar(Long customerId, Long addressId, CustomerAddressReq req) {
+        Customer customer = encontrarPeloId(customerId);
+
+        CustomerAddress address = customer.getAddresses().stream()
+                .filter(a -> a.getId().equals(addressId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
+
+        address.setTipo(req.tipo());
+        addressMapper.atualizar(address.getAddress(), req.address());
+    }
+
 }

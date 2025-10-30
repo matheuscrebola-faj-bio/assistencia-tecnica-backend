@@ -63,8 +63,7 @@ public class CustomersController {
             @RequestBody CustomerUpdate update){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id"));
         // atualiza dados do cliente.
-        Customer customer = customerService.encontrarPeloId(customerId);
-        customerService.atualizar(customerMapper.mappear(customer, update));
+        customerService.atualizar(customerId, update);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,8 +73,7 @@ public class CustomersController {
             @PathVariable Long customerId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/customers/id"));
         // inativa/Remove cliente.
-        Customer customer = customerService.encontrarPeloId(customerId);
-        customerService.delecaoLogica(customerMapper.mappear(customer,false));
+        customerService.delecaoLogica(customerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -99,7 +97,7 @@ public class CustomersController {
         // adiciona contato.
         Customer customer = customerService.encontrarPeloId(customerId);
         CustomerContact customerContact = customerContactService.cadastrar(customerContactMapper.mappear(req, customer));
-        customerService.atualizar(customerMapper.mappear(customer, customerContact));
+        customerService.atualizar(customer, customerContact);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -123,7 +121,7 @@ public class CustomersController {
         Customer customer = customerService.encontrarPeloId(customerId);
         Address address = addressService.cadastrar(addressMapper.mappear(req.address()));
         CustomerAddress customerAddress = customerAddressMapper.mappear(address, req.tipo(), customer);
-        customerService.atualizar(customerMapper.mappear(customer, customerAddress));
+        customerService.atualizar(customer, customerAddress);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -134,9 +132,8 @@ public class CustomersController {
             @PathVariable Long contactId,
             @RequestBody CustomerContactReq req) {
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id/contacts/id"));
-        Customer customer = customerService.encontrarPeloId(customerId);
         // atualiza o contato dentro da lista
-        customerService.atualizar(customerMapper.mappear(customer, contactId, req));
+        customerService.atualizar(customerId, contactId, req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -148,8 +145,7 @@ public class CustomersController {
             @RequestBody CustomerAddressReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/customers/id/address/id"));
         // atualiza endereço.
-        Customer customer = customerService.encontrarPeloId(customerId);
-        customerService.atualizar(customerMapper.mappear(customer, addressId, req));
+        customerService.atualizar(customerId, addressId, req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
