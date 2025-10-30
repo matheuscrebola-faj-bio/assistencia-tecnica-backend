@@ -91,4 +91,7 @@ public class ServiceOrder {
 
     @Column(name = "closed_at")
     private LocalDateTime closedAt;
+
+    @Column
+    private Boolean ativo;
 }

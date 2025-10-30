@@ -5,10 +5,7 @@ import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerUpdate;
 import br.com.fajbio.assistenciatecnica.api.mapper.AddressMapper;
-import br.com.fajbio.assistenciatecnica.domain.model.Address;
-import br.com.fajbio.assistenciatecnica.domain.model.Customer;
-import br.com.fajbio.assistenciatecnica.domain.model.CustomerAddress;
-import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
+import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +28,6 @@ public class CustomerService {
         return repository.findByDocumento(documento);
     }
 
-    public Customer adicionarOrdemServico(Customer customer) {
-        return salvar(customer);
-    }
-
     public Customer cadastrar(Customer customer) {
         return salvar(customer);
     }
@@ -47,18 +40,18 @@ public class CustomerService {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void removerContato(Long customerId, Long contactId) {
         var customer = encontrarPeloId(customerId);
         // Remove da lista - o orphanRemoval = true faz a deleção automática
         customer.getContacts().removeIf(contact -> contact.getId().equals(contactId));
-        repository.save(customer);
     }
 
+    @Transactional
     public void removerEndereco(Long customerId, Long addressId) {
         var customer = encontrarPeloId(customerId);
         // Remove da lista - o orphanRemoval = true faz a deleção automática
-        customer.getAddresses().removeIf(contact -> contact.getId().equals(addressId));
-        repository.save(customer);
+        customer.getAddresses().removeIf(address -> address.getId().equals(addressId));
     }
 
     @Transactional
@@ -113,4 +106,8 @@ public class CustomerService {
         addressMapper.atualizar(address.getAddress(), req.address());
     }
 
+    @Transactional
+    public void adicionarOrdemServico(Customer customer, ServiceOrder serviceOrder) {
+        customer.getServiceOrders().add(serviceOrder);
+    }
 }

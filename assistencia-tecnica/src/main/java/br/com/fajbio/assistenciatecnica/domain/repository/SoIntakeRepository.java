@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SoIntakeRepository extends JpaRepository<SoIntake,Long> {
+    SoIntake findByServiceOrderId(Long id);
 }

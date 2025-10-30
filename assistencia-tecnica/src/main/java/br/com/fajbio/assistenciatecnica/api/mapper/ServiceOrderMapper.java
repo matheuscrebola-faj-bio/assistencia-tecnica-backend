@@ -1,6 +1,7 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderRes;
 import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
@@ -16,11 +17,11 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class ServiceOrderMapper {
-    private final ServiceOrderRepository repository;
+    private final EquipmentMapper equipmentMapper;
 
-    public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment) {
+    public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment, Short ultimoValor) {
         return ServiceOrder.builder()
-                .atendimento(criarAtentimento().toString())
+                .atendimento(criarAtentimento(ultimoValor).toString())
                 .customerId(customer.getId())
                 .customer(customer)
                 .equipmentId(equipment.getId())
@@ -36,11 +37,10 @@ public class ServiceOrderMapper {
                 .build();
     }
 
-    protected StringBuilder criarAtentimento() {
+    protected StringBuilder criarAtentimento(Short ultimoValor) {
         int ano = LocalDate.now().getYear();
         int mes = LocalDate.now().getMonthValue();
         // Busca o último registro (pode retornar null no início do mês)
-        Short ultimoValor = repository.findUltimoValor();
         short proximoValor;
         if (ultimoValor == null) {
             // Primeiro atendimento do mês
@@ -52,5 +52,14 @@ public class ServiceOrderMapper {
         // Formata o número com 3 dígitos (000, 001, ...)
         String codigo = String.format("%d%02d%03d", ano, mes, proximoValor);
         return new StringBuilder(codigo);
+    }
+
+    public ServiceOrderRes mappear(ServiceOrder serviceOrder) {
+        return ServiceOrderRes.builder()
+                .id(serviceOrder.getId())
+                .equipment(equipmentMapper.mappear(serviceOrder.getEquipment()))
+                .currentStatus(serviceOrder.getCurrentStatus())
+                .productLine(serviceOrder.getProductLine())
+                .build();
     }
 }

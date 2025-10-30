@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,6 +52,35 @@ public class ServiceOrderService {
         return serviceOrder.getWorkOrders();
     }
 
+    public Short encontrarUltimoValor(){
+        return repository.findUltimoValor();
+    }
+
+    @Transactional
+    public void exclusaoLogica(Long serviceOrderId) {
+        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+        serviceOrder.setClosedAt(LocalDateTime.now());
+        serviceOrder.setAtivo(false);
+    }
+
+    public List<SoStatusHistory> encontrarHistoriaPeloId(Long serviceOrderId) {
+        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+        return serviceOrder.getStatusHistory();
+    }
+
+    @Transactional
+    public ServiceOrder atribuirTecnico(Long serviceOrderId, User user) {
+        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+        serviceOrder.setAssignedTo(user);
+        serviceOrder.setAssignedToUserId(user.getId());
+        return serviceOrder;
+    }
+
+    @Transactional
+    public void atualizarStatusHistory(Long serviceOrderId, SoStatusHistory statusHistory) {
+        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+        serviceOrder.getStatusHistory().add(statusHistory);
+    }
 
 //    @Transactional
 //    public ServiceOrder registrarChegada(Long id, SoIntakeReq req) {

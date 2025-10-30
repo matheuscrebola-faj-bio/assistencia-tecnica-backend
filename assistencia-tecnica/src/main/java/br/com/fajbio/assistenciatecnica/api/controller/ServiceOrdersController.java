@@ -69,9 +69,9 @@ public class ServiceOrdersController {
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         var customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
-        var serviceOrder = serviceOrderMapper.mappear(req, customer, equipment);
-        var service = serviceOrderService.cadastrar(serviceOrder);
-        customerService.adicionarOrdemServico(customerMapper.mappear(customer, service));
+        var ultimoValor = serviceOrderService.encontrarUltimoValor();
+        var serviceOrder = serviceOrderService.cadastrar(serviceOrderMapper.mappear(req, customer, equipment, ultimoValor));
+        customerService.adicionarOrdemServico(customer, serviceOrder);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -115,12 +115,13 @@ public class ServiceOrdersController {
 //        return new ResponseEntity<>(HttpStatus.CREATED);
 //    }
 //
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getServiceOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id"));
-//        //TODO: detalhe do atendimento (campos principais).
-//        return null;
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ServiceOrderRes> getServiceOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id"));
+        // detalhe do atendimento (campos principais).
+        ServiceOrderRes res = serviceOrderMapper.mappear(serviceOrderService.encontrarPeloId(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<?> updateServiceOrder(@RequestHeader Long id){
@@ -128,53 +129,59 @@ public class ServiceOrdersController {
 //        //TODO: atualiza campos do atendimento.
 //        return null;
 //    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteServiceOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/service-orders/id"));
-//        //TODO: cancela/Remove (conforme regra de negócio).
-//        return null;
-//    }
-//
-//    @GetMapping("/{id}/timeline")
-//    public ResponseEntity<?> getServiceOrderTimeline(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/timeline"));
-//        //TODO: consolida e retorna linha do tempo (histórico de status e eventos).
-//        return null;
-//    }
-//
-//    @PostMapping("/{id}/assign/{userId}")
-//    public ResponseEntity<?> assignServiceOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/assign/id"));
-//        //TODO: atribui técnico e atualiza status conforme regra.
-//        return null;
-//    }
-//
-//    @GetMapping("/{id}/status/history")
-//    public ResponseEntity<?> listStatusHistory(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/status/history"));
-//        //TODO: retorna histórico de mudanças de status (audit trail).
-//        return null;
-//    }
-//
-//    @PostMapping("/{id}/status")
-//    public ResponseEntity<?> changeStatus(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/status"));
-//        //TODO: valida transição, grava histórico e atualiza status atual.
-//        return null;
-//    }
-//
-//    @GetMapping("/{id}/intake")
-//    public ResponseEntity<?> getIntake(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/intake"));
-//        //TODO: retorna dados de recebimento (data, lacre, observações).
-//        return null;
-//    }
-//
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteServiceOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/service-orders/id"));
+        // cancela/Remove (conforme regra de negócio).
+        serviceOrderService.exclusaoLogica(serviceOrderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/timeline")
+    public ResponseEntity<List<SoStatusHistoryRes>> getServiceOrderTimeline(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/timeline"));
+        // consolida e retorna linha do tempo (histórico de status e eventos).
+        List<SoStatusHistoryRes> res = soStatusHistoryMapper.mappear(serviceOrderService.encontrarHistoriaPeloId(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/assign/{userId}")
+    public ResponseEntity<?> assignServiceOrder(@RequestHeader Long id, @PathVariable Long serviceOrderId, @PathVariable Long userId){
+        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/assign/id"));
+        // atribui técnico e atualiza status conforme regra.
+        var user = userService.encontrarPeloId(userId);
+        var serviceOrder = serviceOrderService.atribuirTecnico(serviceOrderId, user);
+        var fromStatus = soStatusService.encontrarPeloNome(serviceOrder.getCurrentStatus());
+        var toStatus = soStatusService.encontrarPeloNome(ESoStatus.TESTES_INICIAIS);
+        serviceOrderService.atualizarStatusHistory(serviceOrderId, soStatusHistoryMapper.mappear(serviceOrder, fromStatus, toStatus, user));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/status")
+    public ResponseEntity<?> changeStatus(@RequestHeader Long id, @PathVariable Long serviceOrderId, @PathVariable Long userId, @RequestBody StatusReq req){
+        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/status"));
+        // valida transição, grava histórico e atualiza status atual.
+        var user = userService.encontrarPeloId(userId);
+        var serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
+        var fromStatus = soStatusService.encontrarPeloNome(serviceOrder.getCurrentStatus());
+        var toStatus = soStatusService.encontrarPeloNome(req.status());
+        serviceOrderService.atualizarStatusHistory(serviceOrderId, soStatusHistoryMapper.mappear(serviceOrder, fromStatus, toStatus, user));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/intake")
+    public ResponseEntity<SoIntakeRes> getIntake(@RequestHeader Long id, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/intake"));
+        // retorna dados de recebimento (data, lacre, observações).
+        SoIntakeRes res = soIntakeMapper.mappear(soIntakeService.encontrarPeloIdDaServiceOrder(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/intake")
     public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody SoIntakeReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
-        //TODO: registra chegada; muda status para triagem; pode notificar administrativo.
+        // registra chegada; muda status para triagem; pode notificar administrativo.
         var serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
         User user = userService.encontrarPeloId(userId);
         soIntakeService.cadastrar(soIntakeMapper.mappear(req, serviceOrder));
@@ -183,14 +190,14 @@ public class ServiceOrdersController {
         serviceOrderService.registrarChegada(serviceOrder,statusHistory);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//
-//    @PutMapping("/{id}/intake/{intakeId}")
-//    public ResponseEntity<?> updateIntake(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/intake/id"));
-//        //TODO: atualiza registro de recebimento.
-//        return null;
-//    }
-//
+
+    @PutMapping("/{id}/intake/{intakeId}")
+    public ResponseEntity<?> updateIntake(@RequestHeader Long id){
+        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/intake/id"));
+        //TODO: atualiza registro de recebimento.
+        return null;
+    }
+
 //    @GetMapping("/{id}/initial-tests")
 //    public ResponseEntity<?> listInitialTests(@RequestHeader Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/initial-tests"));

@@ -19,4 +19,9 @@ public class SoIntakeService {
     public SoIntake cadastrar(SoIntake intake) {
         return salvar(intake);
     }
+
+    public SoIntake encontrarPeloIdDaServiceOrder(Long serviceOrderId) {
+        return repository.findByServiceOrderId(serviceOrderId);
+    }
+
 }
