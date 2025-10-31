@@ -42,4 +42,8 @@ public class EquipmentModelService {
     public void delecao(Long id) {
         repository.deleteById(id);
     }
+
+    public EquipmentModel encontrarPeloNomeDoTipoDeEquipamento(String nome) {
+        return repository.findByEquipmentTypeNome(nome);
+    }
 }
