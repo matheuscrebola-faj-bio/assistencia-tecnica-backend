@@ -58,8 +58,7 @@ public class UsersController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@RequestHeader Long reqId, @PathVariable Long userId, @RequestBody UserUpdate update){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "PUT", "/users/id"));
-        User user = userService.encontrarPeloId(userId);
-        userService.atualizar(userMapper.mappear(user, update));
+        userService.atualizar(userId, update);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -67,8 +66,7 @@ public class UsersController {
     public ResponseEntity<?> deleteUser(@RequestHeader Long reqId, @PathVariable Long userId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id"));
         // desativa/Remove usuário (soft/hard, conforme regra).
-        User user = userService.encontrarPeloId(userId);
-        userService.delecaoLogica(userMapper.mappear(user, false));
+        userService.delecaoLogica(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -77,8 +75,7 @@ public class UsersController {
         accessLogService.registrar(accessLogMapper.mappear(reqId, "POST", "/users/id/roles/ID"));
         // vincula perfil ao usuário.
         Role role = roleService.encontrarPeloId(roleId);
-        User user = userService.encontrarPeloId(userId);
-        userService.adicionarRoleAoUsuario(userMapper.mappear(role, user));
+        userService.adicionarRoleAoUsuario(role, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -95,9 +92,7 @@ public class UsersController {
     public ResponseEntity<?> removeRoleFromUser(@RequestHeader Long reqId, @PathVariable Long userId, @PathVariable Long roleId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id/roles/id"));
         // remove perfil do usuário.
-        User user = userService.encontrarPeloId(userId);
-        Role role = roleService.encontrarPeloId(roleId);
-        userService.removerRoleDoUsuario(userMapper.mappear(user, role));
+        userService.removerRoleDoUsuario(userId, roleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
