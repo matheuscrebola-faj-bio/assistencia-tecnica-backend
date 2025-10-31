@@ -47,4 +47,7 @@ public class InitialTest {
 
     @Column(name = "resultado")
     private String resultado;
+
+    @Column
+    private Boolean ativo;
 }

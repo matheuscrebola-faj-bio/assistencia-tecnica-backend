@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InitialTestRepository extends JpaRepository<InitialTest,Long> {
+    InitialTest findByServiceOrderId(Long id);
 }

@@ -33,7 +33,7 @@ public class ServiceOrdersController {
     private final NotificationMapper notificationMapper;
     private final NotificationService notificationService;
     private final DocTemplateFillService docTemplateFillService;
-//    private final MailService mailService;
+//  private final MailService mailService;
     private final DocumentService documentService;
     private final SoStatusHistoryMapper soStatusHistoryMapper;
     private final SoStatusHistoryService soStatusHistoryService;
@@ -51,19 +51,13 @@ public class ServiceOrdersController {
     private final WorkLogMapper workLogMapper;
     private final WorkLogService workLogService;
 
-//    @GetMapping
-//    public ResponseEntity<?> listServiceOrders(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders"));
-//        //TODO: lista atendimentos com filtros (status, cliente, técnico).
-//        return null;
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<?> listServiceOrders(@RequestHeader Long userId, ESoStatus eSoStatus){
-//        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
-//        //List<ServiceOrdersRes> res = serviceOrderService.encontrarPeloStatusAtual(eSoStatus);
-//        return new ResponseEntity<>(res, HttpStatus.OK);
-//    }
+    @GetMapping
+    public ResponseEntity<List<ServiceOrderRes>> listServiceOrders(@RequestHeader Long userId, ESoStatus eSoStatus){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
+        // lista atendimentos com filtros (status, cliente, técnico).
+        List<ServiceOrderRes> res = serviceOrderMapper.mappear(serviceOrderService.encontrarPeloStatusAtual(eSoStatus));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
@@ -124,10 +118,11 @@ public class ServiceOrdersController {
     }
 //
 //    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateServiceOrder(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id"));
+//    public ResponseEntity<?> updateServiceOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody ServiceOrderReq req){
+//        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/service-orders/id"));
 //        //TODO: atualiza campos do atendimento.
-//        return null;
+//        serviceOrderService.atualizarCamposDoAtendimento(serviceOrderId, req);
+//        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
     @DeleteMapping("/{id}")
@@ -192,49 +187,55 @@ public class ServiceOrdersController {
     }
 
     @PutMapping("/{id}/intake/{intakeId}")
-    public ResponseEntity<?> updateIntake(@RequestHeader Long id){
-        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/intake/id"));
-        //TODO: atualiza registro de recebimento.
-        return null;
+    public ResponseEntity<?> updateIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long intakeId, @RequestBody SoIntakeReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/service-orders/id/intake/id"));
+        // atualiza registro de recebimento.
+        soIntakeService.atualizarIntake(serviceOrderId, intakeId, req);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}/initial-tests")
-//    public ResponseEntity<?> listInitialTests(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/initial-tests"));
-//        //TODO: lista testes iniciais do atendimento.
-//        return null;
-//    }
-//
+    @GetMapping("/{id}/initial-tests")
+    public ResponseEntity<?> listInitialTests(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/initial-tests"));
+        // lista testes iniciais do atendimento.
+        InitialTestRes res = initialTestMapper.mappear(
+                initialTestService.encontrarTestesIniciaisPeloServiceOrderId(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/initial-tests")
     public ResponseEntity<?> createInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody InitialTestReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/initial-tests"));
-        //TODO: cria teste inicial (tecn. responsável, período, resultado).
+        // cria teste inicial (tecn. responsável, período, resultado).
         ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
         initialTestService.cadastrar(initialTestMapper.mappear(serviceOrder, req));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-//
-//    @GetMapping("/{id}/initial-tests/{testId}")
-//    public ResponseEntity<?> getInitialTest(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/initial-tests/id"));
-//        //TODO: detalhe do teste.
-//        return null;
-//    }
-//
-//    @PutMapping("/{id}/initial-tests/{testId}")
-//    public ResponseEntity<?> updateInitialTest(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/service-orders/id/initial-tests/id"));
-//        //TODO: atualiza teste.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{id}/initial-tests/{testId}")
-//    public ResponseEntity<?> deleteInitialTest(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/service-orders/id/initial-tests/id"));
-//        //TODO: remove teste.
-//        return null;
-//    }
-//
+
+    @GetMapping("/{id}/initial-tests")
+    public ResponseEntity<InitialTestRes> getInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/initial-tests/id"));
+        // detalhe do teste.
+        InitialTestRes res = initialTestMapper.mappear(initialTestService.encontrarTestesIniciaisPeloServiceOrderId(serviceOrderId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/initial-tests/{testId}")
+    public ResponseEntity<?> updateInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long testId, @RequestBody InitialTestReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/service-orders/id/initial-tests/id"));
+        // atualiza teste.
+        initialTestService.atualizarTeste(serviceOrderId, testId, req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/initial-tests/{testId}")
+    public ResponseEntity<?> deleteInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long testId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/service-orders/id/initial-tests/id"));
+        // remove teste.
+        initialTestService.exclusaoLogica(serviceOrderId, testId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 //    @GetMapping("/{id}/calibrations")
 //    public ResponseEntity<?> listCalibrations(@RequestHeader Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/calibrations"));

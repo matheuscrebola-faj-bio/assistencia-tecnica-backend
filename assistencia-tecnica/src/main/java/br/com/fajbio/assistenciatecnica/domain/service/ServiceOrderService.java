@@ -1,5 +1,8 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderUpdateReq;
+import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
 import jakarta.transaction.Transactional;
@@ -81,6 +84,16 @@ public class ServiceOrderService {
         ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
         serviceOrder.getStatusHistory().add(statusHistory);
     }
+
+    public List<ServiceOrder> encontrarPeloStatusAtual(ESoStatus eSoStatus) {
+        return repository.findByCurrentStatus(eSoStatus);
+    }
+//
+//    @Transactional
+//    public void atualizarCamposDoAtendimento(Long serviceOrderId, ServiceOrderUpdateReq req) {
+//        ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
+//        serviceOrder.setEm
+//    }
 
 //    @Transactional
 //    public ServiceOrder registrarChegada(Long id, SoIntakeReq req) {

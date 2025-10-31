@@ -7,12 +7,13 @@ import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
 import br.com.fajbio.assistenciatecnica.domain.model.Equipment;
 import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
-import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -61,5 +62,11 @@ public class ServiceOrderMapper {
                 .currentStatus(serviceOrder.getCurrentStatus())
                 .productLine(serviceOrder.getProductLine())
                 .build();
+    }
+
+    public List<ServiceOrderRes> mappear(List<ServiceOrder> serviceOrders) {
+        return serviceOrders.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
     }
 }

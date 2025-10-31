@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressRes;
 import br.com.fajbio.assistenciatecnica.domain.model.Address;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,5 +39,18 @@ public class CustomerAddressMapper {
                 .address(addressMapper.mappear(address.getAddress()))
                 .tipo(address.getTipo())
                 .build();
+    }
+
+    public CustomerAddress mappear(CustomerAddressReq address){
+        return CustomerAddress.builder()
+                .address(addressMapper.mappear(address.address()))
+                .tipo(address.tipo())
+                .build();
+    }
+
+    public List<CustomerAddress> mappear(Set<CustomerAddressReq> addresses) {
+        return addresses.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
     }
 }

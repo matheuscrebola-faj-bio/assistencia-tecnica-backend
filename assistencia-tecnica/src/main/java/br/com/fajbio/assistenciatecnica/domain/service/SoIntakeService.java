@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.api.dto.SoIntakeReq;
 import br.com.fajbio.assistenciatecnica.domain.model.SoIntake;
 import br.com.fajbio.assistenciatecnica.domain.repository.SoIntakeRepository;
 import jakarta.transaction.Transactional;
@@ -24,4 +25,12 @@ public class SoIntakeService {
         return repository.findByServiceOrderId(serviceOrderId);
     }
 
+    @Transactional
+    public void atualizarIntake(Long serviceOrderId, Long intakeId, SoIntakeReq req) {
+        SoIntake intake = encontrarPeloIdDaServiceOrder(serviceOrderId);
+        if (intake.getId().equals(intakeId)){
+            intake.setLacreIntacto(req.lacreIntacto());
+            intake.setObservacoes(req.observacoes());
+        }
+    }
 }

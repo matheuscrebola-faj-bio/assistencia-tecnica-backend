@@ -15,14 +15,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerMapper {
     private final AddressMapper addressMapper;
+    private final CustomerContactMapper customerContactMapper;
+    private final CustomerAddressMapper customerAddressMapper;
+
     public Customer mappear(CustomerReq req) {
         return Customer.builder()
                 .nomeLegal(req.nomeLegal())
                 .documento(req.documento())
                 .email(req.email())
                 .ativo(true)
-                .contacts(req.contacts())
-                .addresses(req.addresses())
+                .contacts(customerContactMapper.mappear(req.contacts()))
+                .addresses(customerAddressMapper.mappear(req.addresses()))
                 .build();
     }
 

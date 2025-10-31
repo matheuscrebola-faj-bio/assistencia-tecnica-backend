@@ -7,6 +7,7 @@ import br.com.fajbio.assistenciatecnica.domain.model.CustomerContact;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,5 +46,19 @@ public class CustomerContactMapper {
                 .email(req.email())
                 .telefone(req.telefone())
                 .build();
+    }
+
+    public CustomerContact mappear(CustomerContactReq contact){
+        return CustomerContact.builder()
+                .nome(contact.nome())
+                .email(contact.email())
+                .telefone(contact.telefone())
+                .build();
+    }
+
+    public List<CustomerContact> mappear(Set<CustomerContactReq> contacts) {
+        return contacts.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
     }
 }
