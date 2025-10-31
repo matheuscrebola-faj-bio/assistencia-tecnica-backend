@@ -1,10 +1,17 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.ComponentReq;
+import br.com.fajbio.assistenciatecnica.api.dto.ComponentRes;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.ComponentMapper;
 import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import br.com.fajbio.assistenciatecnica.domain.service.ComponentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/components")
@@ -12,39 +19,46 @@ import org.springframework.web.bind.annotation.*;
 public class ComponentsCatalogController {
     private final AccessLogService accessLogService;
     private final AccessLogMapper accessLogMapper;
+    private final ComponentMapper componentMapper;
+    private final ComponentService componentService;
 
-//    @GetMapping
-//    public ResponseEntity<?> listComponents(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/components"));
-//        //TODO: lista componentes.
-//        return null;
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<?> createComponent(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/components"));
-//        //TODO: cria componente.
-//        return null;
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getComponent(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/components/id"));
-//        //TODO: detalhe do componente.
-//        return null;
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateComponent(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/components/id"));
-//        //TODO: atualiza componente.
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteComponent(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/components/id"));
-//        //TODO: remove componente.
-//        return null;
-//    }
+    @GetMapping
+    public ResponseEntity<List<ComponentRes>> listComponents(@RequestHeader Long id){
+        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/components"));
+        // lista componentes.
+        List<ComponentRes> res = componentMapper.mappear(componentService.encontrarTodos());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createComponent(@RequestHeader Long id, @RequestBody ComponentReq req){
+        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/components"));
+        // cria componente.
+        componentService.cadastrar(componentMapper.mappear(req));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ComponentRes> getComponent(@RequestHeader Long userId, @PathVariable Long componentId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/components/id"));
+        // detalhe do componente.
+        ComponentRes res = componentMapper.mappear(componentService.encontrarPeloId(componentId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateComponent(@RequestHeader Long userId, @PathVariable Long componentId, @RequestBody ComponentReq req){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/components/id"));
+        // atualiza componente.
+        componentService.atualizar(componentId, req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteComponent(@RequestHeader Long userId, @PathVariable Long componentId){
+        accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/components/id"));
+        // remove componente.
+        componentService.delecaoLogica(componentId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
