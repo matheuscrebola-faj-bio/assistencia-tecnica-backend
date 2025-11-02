@@ -2,7 +2,9 @@ package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.api.dto.EquipmentModelReq;
 import br.com.fajbio.assistenciatecnica.domain.model.EquipmentModel;
+import br.com.fajbio.assistenciatecnica.domain.model.EquipmentType;
 import br.com.fajbio.assistenciatecnica.domain.repository.EquipmentModelRepository;
+import br.com.fajbio.assistenciatecnica.domain.repository.EquipmentTypeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EquipmentModelService {
-    private final EquipmentModelRepository repository;
+    private final EquipmentModelRepository equipmentModelRepository;
+    private final EquipmentTypeRepository equipmentTypeRepository;
 
     public List<EquipmentModel> encontrarTodos() {
-        return repository.findAll();
+        return equipmentModelRepository.findAll();
     }
 
     @Transactional
     protected EquipmentModel salvar(EquipmentModel model) {
-        return repository.save(model);
+        return equipmentModelRepository.save(model);
     }
 
     public EquipmentModel cadastrar(EquipmentModel model) {
@@ -28,7 +31,7 @@ public class EquipmentModelService {
     }
 
     public EquipmentModel encontrarPeloId(Long id) {
-        return repository.findById(id).orElse(null);
+        return equipmentModelRepository.findById(id).orElse(null);
     }
 
     @Transactional
@@ -40,10 +43,11 @@ public class EquipmentModelService {
 
     @Transactional
     public void delecao(Long id) {
-        repository.deleteById(id);
+        equipmentModelRepository.deleteById(id);
     }
 
     public EquipmentModel encontrarPeloNomeDoTipoDeEquipamento(String nome) {
-        return repository.findByEquipmentTypeNome(nome);
+        EquipmentType type = equipmentTypeRepository.findByNome(nome);
+        return equipmentModelRepository.findByType(type);
     }
 }

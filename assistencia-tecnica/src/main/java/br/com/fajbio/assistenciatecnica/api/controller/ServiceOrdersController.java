@@ -63,13 +63,19 @@ public class ServiceOrdersController {
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         var customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
-        var ultimoValor = serviceOrderService.encontrarUltimoValor();
-        var serviceOrder = serviceOrderService.cadastrar(serviceOrderMapper.mappear(req, customer, equipment, ultimoValor));
-        customerService.adicionarOrdemServico(customer, serviceOrder);
+
+        // passe uma função para criar o atendimento a partir do valor incremental:
+        ServiceOrder so = serviceOrderService.cadastrarNovaOrdem(
+                req, customer, equipment,
+                (Short v) -> serviceOrderMapper.criarAtentimento(v).toString() // seu método existente
+        );
+
+        customerService.adicionarOrdemServico(customer, so);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-//    @PostMapping("/public")
+
+    //    @PostMapping("/public")
 //    public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req) throws Exception {
 //        // 1) Cria OS e registros relacionados
 //        var customer = customerService.encontrarPeloDocumento(req.cnpj());
@@ -212,7 +218,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/initial-tests")
+    @GetMapping("/{id}/initial-tests/{testId}")
     public ResponseEntity<InitialTestRes> getInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/initial-tests/id"));
         // detalhe do teste.

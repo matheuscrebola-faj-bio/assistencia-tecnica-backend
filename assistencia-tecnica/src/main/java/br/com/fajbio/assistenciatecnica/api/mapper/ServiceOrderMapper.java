@@ -38,7 +38,7 @@ public class ServiceOrderMapper {
                 .build();
     }
 
-    protected StringBuilder criarAtentimento(Short ultimoValor) {
+    public StringBuilder criarAtentimento(Short ultimoValor) {
         int ano = LocalDate.now().getYear();
         int mes = LocalDate.now().getMonthValue();
         // Busca o último registro (pode retornar null no início do mês)

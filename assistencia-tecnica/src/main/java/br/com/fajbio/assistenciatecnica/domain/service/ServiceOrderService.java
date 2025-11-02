@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderReq;
 import br.com.fajbio.assistenciatecnica.api.dto.ServiceOrderUpdateReq;
+import br.com.fajbio.assistenciatecnica.domain.enums.EOrigin;
 import br.com.fajbio.assistenciatecnica.domain.enums.ESoStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceOrderRepository;
@@ -9,8 +10,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -55,8 +58,38 @@ public class ServiceOrderService {
         return serviceOrder.getWorkOrders();
     }
 
-    public Short encontrarUltimoValor(){
-        return repository.findUltimoValor();
+    @Transactional
+    public ServiceOrder cadastrarNovaOrdem(ServiceOrderReq req, Customer customer, Equipment equipment,
+                                           Function<Short, String> criarAtendimento) {
+        // delimita mês atual
+        LocalDate hoje = LocalDate.now();
+        LocalDateTime inicioMes = hoje.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime inicioProxMes = hoje.withDayOfMonth(1).plusMonths(1).atStartOfDay();
+
+        // busca o último valor (0 se ainda não houver)
+        Short ultimo = repository.findMaxUltimoValorNoMes(inicioMes, inicioProxMes);
+
+        // incrementa com segurança de tipo
+        short proximo = (short) (ultimo == null ? 1 : (ultimo + 1));
+
+        ServiceOrder nova = ServiceOrder.builder()
+                .atendimento(criarAtendimento.apply(proximo)) // seu método/func para montar a string
+                .ultimoValor(proximo)
+                .customerId(customer.getId())
+                .customer(customer)
+                .equipmentId(equipment.getId())
+                .equipment(equipment)
+                .currentStatus(ESoStatus.AGUARDANDO_RECEBIMENTO)
+                .origin(EOrigin.WEB_FORM)
+                .requesterContato(req.contato())
+                .requesterEmail(req.email())
+                .requesterCompanyName(req.empresa())
+                .requesterAddress(req.endereco())
+                .productLine(req.produto())
+                .criadoEm(LocalDateTime.now())
+                .build();
+
+        return repository.save(nova);
     }
 
     @Transactional
