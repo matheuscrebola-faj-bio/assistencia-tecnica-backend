@@ -13,7 +13,4 @@ public class CustomerRes {
     private String nomeLegal;
     private String documento;
     private String email;
-    private List<CustomerContact> contacts;
-    private List<CustomerAddress> addresses;
-    private List<ServiceOrder> serviceOrders;
 }

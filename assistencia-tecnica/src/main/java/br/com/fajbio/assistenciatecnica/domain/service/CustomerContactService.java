@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerContactService {
@@ -18,6 +20,10 @@ public class CustomerContactService {
 
     public CustomerContact cadastrar(CustomerContact contact) {
         return salvar(contact);
+    }
+
+    public List<CustomerContact> cadastrar(List<CustomerContact> contacts) {
+        return repository.saveAll(contacts);
     }
 
     public CustomerContact encontrarPeloId(Long id) {

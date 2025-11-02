@@ -59,7 +59,6 @@ public class CustomerService {
         Customer customer = encontrarPeloId(customerId);
         customer.setNomeLegal(update.nomeLegal());
         customer.setDocumento(update.documento());
-        customer.setEmail(customer.getEmail());
     }
 
     @Transactional

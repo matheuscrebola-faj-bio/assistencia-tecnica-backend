@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,12 +26,6 @@ public class CustomerAddressMapper {
                 .build();
     }
 
-    public List<CustomerAddressRes> mappear(List<CustomerAddress> addresses) {
-        return addresses.stream()
-                .map(this::mappear)
-                .collect(Collectors.toList());
-    }
-
     public CustomerAddressRes mappear(CustomerAddress address) {
         return CustomerAddressRes.builder()
                 .id(address.getId())
@@ -47,8 +40,8 @@ public class CustomerAddressMapper {
                 .tipo(address.tipo())
                 .build();
     }
-
-    public List<CustomerAddress> mappear(Set<CustomerAddressReq> addresses) {
+    
+    public List<CustomerAddress> mappear(List<CustomerAddressReq> addresses, Customer customer) {
         return addresses.stream()
                 .map(this::mappear)
                 .collect(Collectors.toList());

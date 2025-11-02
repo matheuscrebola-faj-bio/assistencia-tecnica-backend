@@ -27,10 +27,13 @@ public class CustomersController {
     private final AddressMapper addressMapper;
     private final AddressService addressService;
     private final CustomerAddressMapper customerAddressMapper;
+    private final CustomerAddressService customerAddressService;
 
     @GetMapping
-    public ResponseEntity<List<CustomerRes>> listCustomers(@RequestHeader Long id){
-        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/customers"));
+    public ResponseEntity<List<CustomerRes>> listCustomers(
+//            @RequestHeader Long id
+    ){
+        //accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/customers"));
         // lista clientes com busca e paginação.
         List<CustomerRes> res = customerMapper.mappear(customerService.encontrarTodos());
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -38,19 +41,19 @@ public class CustomersController {
 
     @PostMapping
     public ResponseEntity<?> createCustomer(
-            @RequestHeader Long userId,
+            //@RequestHeader Long userId,
             @RequestBody CustomerReq req){
-        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
+        //accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
         // cria cliente, contatos e endereços (transação).
-        customerService.cadastrar(customerMapper.mappear(req));
+        Customer customer = customerService.cadastrar(customerMapper.mappear(req));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerRes> getCustomerById(
-            @RequestHeader Long userId,
+            //@RequestHeader Long userId,
             @PathVariable Long customerId){
-        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id"));
+        //accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id"));
         // detalhe do cliente.
         CustomerRes res = customerMapper.mappear(customerService.encontrarPeloId(customerId));
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -77,16 +80,16 @@ public class CustomersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{customerId}/contacts")
-    public ResponseEntity<List<CustomerContactRes>> listCustomerContacts(
-            @RequestHeader Long userId,
-            @PathVariable Long customerId){
-        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/contacts"));
-        // lista contatos do cliente.
-        Customer customer = customerService.encontrarPeloId(customerId);
-        List<CustomerContactRes> res = customerContactMapper.mappear(customer.getContacts());
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @GetMapping("/{customerId}/contacts")
+//    public ResponseEntity<List<CustomerContactRes>> listCustomerContacts(
+//            @RequestHeader Long userId,
+//            @PathVariable Long customerId){
+//        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/contacts"));
+//        // lista contatos do cliente.
+//        Customer customer = customerService.encontrarPeloId(customerId);
+//        List<CustomerContactRes> res = customerContactMapper.mappear(customer.getContacts());
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
 
     @PostMapping("/{customerId}/contacts")
     public ResponseEntity<?> createCustomerContact(
@@ -101,16 +104,16 @@ public class CustomersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{customerId}/addresses")
-    public ResponseEntity<List<CustomerAddressRes>> listCustomerAddresses(
-            @RequestHeader Long userId,
-            @PathVariable Long customerId){
-        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/addresses"));
-        // lista endereços do cliente.
-        Customer customer = customerService.encontrarPeloId(customerId);
-        List<CustomerAddressRes> res = customerAddressMapper.mappear(customer.getAddresses());
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @GetMapping("/{customerId}/addresses")
+//    public ResponseEntity<List<CustomerAddressRes>> listCustomerAddresses(
+//            @RequestHeader Long userId,
+//            @PathVariable Long customerId){
+//        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/customers/id/addresses"));
+//        // lista endereços do cliente.
+//        Customer customer = customerService.encontrarPeloId(customerId);
+//        List<CustomerAddressRes> res = customerAddressMapper.mappear(customer.getAddresses());
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
 
     @PostMapping("/{customerId}/addresses")
     public ResponseEntity<?> createCustomerAddress(
