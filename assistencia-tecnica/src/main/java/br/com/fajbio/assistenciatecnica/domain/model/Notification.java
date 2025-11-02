@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Table(name = "tb_notifications", schema = "assistencia_tecnica", indexes = {
         @Index(name = "idx_notif_so", columnList = "service_order_id"),
         @Index(name = "idx_notif_tipo", columnList = "tipo"),
-        @Index(name = "idx_notif_status", columnList = "notification_status"),
         @Index(name = "idx_notif_enviado", columnList = "enviado_em")
 })
 @Getter

@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name = "tb_service_orders", schema = "assistencia_tecnica", indexes = {
         @Index(name = "idx_so_customer", columnList = "customer_id"),
         @Index(name = "idx_so_equipment", columnList = "equipment_id"),
-        @Index(name = "idx_so_status", columnList = "current_status_id"),
         @Index(name = "idx_so_assigned", columnList = "assigned_to_user_id")
 })
 @Getter
