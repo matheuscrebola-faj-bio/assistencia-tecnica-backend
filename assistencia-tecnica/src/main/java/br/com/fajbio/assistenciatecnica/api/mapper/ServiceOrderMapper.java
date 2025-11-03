@@ -70,6 +70,6 @@ public class ServiceOrderMapper {
                 .collect(Collectors.toList());
     }
 
-    public ServiceOrder mappear(Customer customer, ServiceOrderReq req, Equipment equipment) {
-    }
+//    public ServiceOrder mappear(Customer customer, ServiceOrderReq req, Equipment equipment) {
+//    }
 }

@@ -27,7 +27,7 @@ public class CustomerMapper {
 
     public Customer mappear(CustomerReq req) {
         return Customer.builder()
-                .nomeLegal(req.nomeLegal())
+                .nomeLegal(req.nome())
                 .documento(req.documento())
                 .ativo(true)
                 .build();

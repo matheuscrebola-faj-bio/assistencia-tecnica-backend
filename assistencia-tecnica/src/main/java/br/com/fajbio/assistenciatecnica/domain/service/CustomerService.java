@@ -56,7 +56,7 @@ public class CustomerService {
     @Transactional
     public void atualizar(Long customerId, CustomerReq update) {
         Customer customer = encontrarPeloId(customerId);
-        customer.setNomeLegal(update.nomeLegal());
+        customer.setNomeLegal(update.nome());
         customer.setDocumento(update.documento());
     }
 
@@ -107,5 +107,12 @@ public class CustomerService {
     @Transactional
     public void adicionarOrdemServico(Customer customer, ServiceOrder serviceOrder) {
         customer.getServiceOrders().add(serviceOrder);
+    }
+
+    @Transactional
+    public void atualizar(CustomerAddress address, CustomerContact contact, Long id) {
+        Customer customer = encontrarPeloId(id);
+        customer.getAddresses().add(address);
+        customer.getContacts().add(contact);
     }
 }

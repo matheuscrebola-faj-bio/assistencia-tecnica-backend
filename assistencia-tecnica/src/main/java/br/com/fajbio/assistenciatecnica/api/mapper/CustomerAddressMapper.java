@@ -16,16 +16,6 @@ import java.util.stream.Collectors;
 public class CustomerAddressMapper {
     private final AddressMapper addressMapper;
 
-    public CustomerAddress mappear(Address address, String tipo, Customer customer) {
-        return CustomerAddress.builder()
-                .customerId(customer.getId())
-                .customer(customer)
-                .addressId(address.getId())
-                .address(address)
-                .tipo(tipo)
-                .build();
-    }
-
     public CustomerAddressRes mappear(CustomerAddress address) {
         return CustomerAddressRes.builder()
                 .id(address.getId())
@@ -51,5 +41,15 @@ public class CustomerAddressMapper {
         return addresses.stream()
                 .map(this::mappear)
                 .collect(Collectors.toList());
+    }
+
+    public CustomerAddress mappear(String tipo, Customer customer, Address address) {
+        return CustomerAddress.builder()
+                .customerId(customer.getId())
+                .customer(customer)
+                .addressId(address.getId())
+                .address(address)
+                .tipo(tipo)
+                .build();
     }
 }

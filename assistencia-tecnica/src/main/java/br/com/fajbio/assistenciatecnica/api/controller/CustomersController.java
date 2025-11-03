@@ -45,7 +45,11 @@ public class CustomersController {
             @RequestBody CustomerReq req){
         //accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers"));
         // cria cliente, contatos e endereços (transação).
-        customerService.cadastrar(customerMapper.mappear(req));
+        var customer = customerService.cadastrar(customerMapper.mappear(req));
+        var address = addressService.cadastrar(addressMapper.mappear(req.address().address()));
+        var cAddress = customerAddressService.cadastrar(customerAddressMapper.mappear(req.address().tipo(), customer, address));
+        var contact = customerContactService.cadastrar(customerContactMapper.mappear(req.contact()));
+        customerService.atualizar(cAddress, contact, customer.getId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -127,7 +131,7 @@ public class CustomersController {
 //        accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/customers/id/addresses"));
         Customer customer = customerService.encontrarPeloId(customerId);
         Address address = addressService.cadastrar(addressMapper.mappear(req.address()));
-        CustomerAddress customerAddress = customerAddressService.cadastrar(customerAddressMapper.mappear(address, req.tipo(), customer));
+        CustomerAddress customerAddress = customerAddressService.cadastrar(customerAddressMapper.mappear(req.tipo(), customer, address));
         customerService.atualizar(customer, customerAddress);
         return new ResponseEntity<>(HttpStatus.OK);
     }
