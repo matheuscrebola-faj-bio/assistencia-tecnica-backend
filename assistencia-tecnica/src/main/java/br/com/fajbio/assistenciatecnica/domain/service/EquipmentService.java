@@ -45,4 +45,8 @@ public class EquipmentService {
     public void delecaoLogica(Long id) {
         repository.deleteById(id);
     }
+
+    public Equipment encontrarPeloSerial(String serial) {
+        return repository.findBySerial(serial);
+    }
 }

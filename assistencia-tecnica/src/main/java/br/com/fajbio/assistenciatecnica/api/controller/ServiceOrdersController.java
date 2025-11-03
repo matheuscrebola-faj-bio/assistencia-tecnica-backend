@@ -62,14 +62,10 @@ public class ServiceOrdersController {
     @PostMapping
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         var customer = customerService.encontrarPeloDocumento(req.cnpj());
-        var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
+        var equipment = equipmentService.encontrarPeloSerial(req.serial());
         // passe uma função para criar o atendimento a partir do valor incremental:
-        ServiceOrder so = serviceOrderService.cadastrarNovaOrdem(
-                req, customer, equipment,
-                (Short v) -> serviceOrderMapper.criarAtentimento(v).toString() // seu método existente
-        );
-
-        customerService.adicionarOrdemServico(customer, so);
+//        var service = serviceOrderMapper.mappear(customer, req, equipment);
+//        customerService.adicionarOrdemServico(customer, so);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

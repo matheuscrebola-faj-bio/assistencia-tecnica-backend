@@ -59,40 +59,6 @@ public class ServiceOrderService {
     }
 
     @Transactional
-    public ServiceOrder cadastrarNovaOrdem(ServiceOrderReq req, Customer customer, Equipment equipment,
-                                           Function<Short, String> criarAtendimento) {
-        // delimita mês atual
-        LocalDate hoje = LocalDate.now();
-        LocalDateTime inicioMes = hoje.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime inicioProxMes = hoje.withDayOfMonth(1).plusMonths(1).atStartOfDay();
-
-        // busca o último valor (0 se ainda não houver)
-        Short ultimo = repository.findMaxUltimoValorNoMes(inicioMes, inicioProxMes);
-
-        // incrementa com segurança de tipo
-        short proximo = (short) (ultimo == null ? 1 : (ultimo + 1));
-
-        ServiceOrder nova = ServiceOrder.builder()
-                .atendimento(criarAtendimento.apply(proximo)) // seu método/func para montar a string
-                .ultimoValor(proximo)
-                .customerId(customer.getId())
-                .customer(customer)
-                .equipmentId(equipment.getId())
-                .equipment(equipment)
-                .currentStatus(ESoStatus.AGUARDANDO_RECEBIMENTO)
-                .origin(EOrigin.WEB_FORM)
-                .requesterContato(req.contato())
-                .requesterEmail(req.email())
-                .requesterCompanyName(req.empresa())
-                .requesterAddress(req.endereco())
-                .productLine(req.produto())
-                .criadoEm(LocalDateTime.now())
-                .build();
-
-        return repository.save(nova);
-    }
-
-    @Transactional
     public void exclusaoLogica(Long serviceOrderId) {
         ServiceOrder serviceOrder = encontrarPeloId(serviceOrderId);
         serviceOrder.setClosedAt(LocalDateTime.now());

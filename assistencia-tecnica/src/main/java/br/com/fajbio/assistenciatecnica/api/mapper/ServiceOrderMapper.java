@@ -69,4 +69,7 @@ public class ServiceOrderMapper {
                 .map(this::mappear)
                 .collect(Collectors.toList());
     }
+
+    public ServiceOrder mappear(Customer customer, ServiceOrderReq req, Equipment equipment) {
+    }
 }
