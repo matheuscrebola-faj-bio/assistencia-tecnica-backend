@@ -13,6 +13,12 @@ import java.util.List;
 
 @Component
 public class QuoteMapper {
+
+    public List<String> mappear(List<QuoteItemReq> quoteItemReqs) {
+        return quoteItemReqs.stream()
+                .map(QuoteItemReq::serviceName)
+                .toList();
+    }
     public Quote mappear(User user, ServiceOrder serviceOrder) {
         return Quote.builder()
                 .serviceOrderId(serviceOrder.getId())

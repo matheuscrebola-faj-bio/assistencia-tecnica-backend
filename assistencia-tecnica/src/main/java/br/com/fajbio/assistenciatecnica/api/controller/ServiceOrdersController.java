@@ -300,7 +300,7 @@ public class ServiceOrdersController {
         User user = userService.encontrarPeloId(userId);
         ServiceOrder serviceOrder = serviceOrderService.encontrarPeloId(serviceOrderId);
         Quote quote = quoteMapper.mappear(user, serviceOrder);
-        List<String> serviceNames = serviceMapper.mappear(req.quoteItemReq());
+        List<String> serviceNames = quoteMapper.mappear(req.quoteItemReq());
         List<Service> service = serviceService.encontrarTodosPeloNome(serviceNames);
         List<QuoteItem> quoteItem = quoteService.cadastrar(quoteMapper.mappear(quote,req,service));
         quoteService.adicionarItems(quoteItem, quote);

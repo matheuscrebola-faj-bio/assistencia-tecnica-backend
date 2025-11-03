@@ -1,6 +1,8 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.api.dto.ServiceReq;
 import br.com.fajbio.assistenciatecnica.domain.repository.ServiceRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +15,30 @@ public class ServiceService {
 
     public List<br.com.fajbio.assistenciatecnica.domain.model.Service> encontrarTodosPeloNome(List<String> nomes) {
         return repository.findAllByNome(String.valueOf(nomes));
+    }
+
+    public List<br.com.fajbio.assistenciatecnica.domain.model.Service> encontrarTodos() {
+        return repository.findAll();
+    }
+
+    @Transactional
+    public void cadastrar(br.com.fajbio.assistenciatecnica.domain.model.Service service) {
+        repository.save(service);
+    }
+
+    public br.com.fajbio.assistenciatecnica.domain.model.Service encontrarPeloId(Long serviceId) {
+        return repository.findById(serviceId).orElse(null);
+    }
+
+    @Transactional
+    public void atualizar(Long serviceId, ServiceReq req) {
+        var service = encontrarPeloId(serviceId);
+        service.setNome(req.nome());
+        service.setPrecoBase(req.precoBase());
+    }
+
+    @Transactional
+    public void deletar(Long serviceId) {
+        repository.deleteById(serviceId);
     }
 }
