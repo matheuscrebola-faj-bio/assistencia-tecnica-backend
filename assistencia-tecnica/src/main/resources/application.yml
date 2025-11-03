@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create   # Flyway controla o schema; use 'none' se não quiser validar.
+      ddl-auto: ${DDL_AUTO:validate}   # Flyway controla o schema; use 'none' se não quiser validar.
     show-sql: ${SHOW_SQL:true}
     properties:
       hibernate:
