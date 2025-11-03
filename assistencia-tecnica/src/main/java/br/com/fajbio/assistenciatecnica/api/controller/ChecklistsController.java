@@ -1,12 +1,8 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
-import br.com.fajbio.assistenciatecnica.api.dto.ChecklistRes;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
-import br.com.fajbio.assistenciatecnica.api.mapper.ChecklistMapper;
 import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
-import br.com.fajbio.assistenciatecnica.domain.service.ChecklistService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

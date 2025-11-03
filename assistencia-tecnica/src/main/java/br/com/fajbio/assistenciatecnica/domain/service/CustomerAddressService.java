@@ -17,4 +17,9 @@ public class CustomerAddressService {
     public List<CustomerAddress> cadastrar(List<CustomerAddress> addresses) {
         return repository.saveAll(addresses);
     }
+
+    @Transactional
+    public CustomerAddress cadastrar(CustomerAddress address) {
+        return repository.save(address);
+    }
 }

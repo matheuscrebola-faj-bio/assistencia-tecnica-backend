@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerRes;
 import br.com.fajbio.assistenciatecnica.domain.model.Customer;
 import org.springframework.stereotype.Component;
@@ -22,5 +23,13 @@ public class CustomerMapper {
         return customers.stream()
                 .map(this::mappear)
                 .collect(Collectors.toList());
+    }
+
+    public Customer mappear(CustomerReq req) {
+        return Customer.builder()
+                .nomeLegal(req.nomeLegal())
+                .documento(req.documento())
+                .ativo(true)
+                .build();
     }
 }

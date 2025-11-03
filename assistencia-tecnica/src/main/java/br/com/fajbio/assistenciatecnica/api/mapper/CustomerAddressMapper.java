@@ -46,4 +46,10 @@ public class CustomerAddressMapper {
                 .map(this::mappear)
                 .collect(Collectors.toList());
     }
+
+    public List<CustomerAddressRes> mappear(List<CustomerAddress> addresses) {
+        return addresses.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
+    }
 }

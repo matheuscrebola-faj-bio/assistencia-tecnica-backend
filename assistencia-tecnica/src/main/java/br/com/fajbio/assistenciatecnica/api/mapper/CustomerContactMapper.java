@@ -20,11 +20,11 @@ public class CustomerContactMapper {
                 .build();
     }
 
-//    public List<CustomerContactRes> mappear(List<CustomerContact> contacts) {
-//        return contacts.stream()
-//                .map(this::mappear)
-//                .collect(Collectors.toList());
-//    }
+    public List<CustomerContactRes> mappear(List<CustomerContact> contacts) {
+        return contacts.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
+    }
 
     public CustomerContact mappear(CustomerContactReq req, Customer customer){
         return CustomerContact.builder()
@@ -53,11 +53,5 @@ public class CustomerContactMapper {
                 .email(contact.email())
                 .telefone(contact.telefone())
                 .build();
-    }
-
-    public List<CustomerContact> mappear(List<CustomerContactReq> contacts){
-        return contacts.stream()
-                .map(this::mappear)
-                .collect(Collectors.toList());
     }
 }

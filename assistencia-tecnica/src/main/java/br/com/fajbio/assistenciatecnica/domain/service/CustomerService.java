@@ -2,7 +2,7 @@ package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactReq;
-import br.com.fajbio.assistenciatecnica.api.dto.CustomerUpdate;
+import br.com.fajbio.assistenciatecnica.api.dto.CustomerReq;
 import br.com.fajbio.assistenciatecnica.api.mapper.AddressMapper;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
 import br.com.fajbio.assistenciatecnica.domain.repository.CustomerRepository;
@@ -54,7 +54,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public void atualizar(Long customerId, CustomerUpdate update) {
+    public void atualizar(Long customerId, CustomerReq update) {
         Customer customer = encontrarPeloId(customerId);
         customer.setNomeLegal(update.nomeLegal());
         customer.setDocumento(update.documento());
