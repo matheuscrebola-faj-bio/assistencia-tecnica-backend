@@ -1,12 +1,14 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.api.dto.EquipmentUpdateReq;
+import br.com.fajbio.assistenciatecnica.domain.enums.EProductLine;
 import br.com.fajbio.assistenciatecnica.domain.model.Equipment;
 import br.com.fajbio.assistenciatecnica.domain.repository.EquipmentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -46,7 +48,15 @@ public class EquipmentService {
         repository.deleteById(id);
     }
 
-    public Equipment encontrarPeloSerial(String serial) {
-        return repository.findBySerial(serial);
+    public Equipment encontrarEquipamento(Long customerId, EProductLine produto, String serial, LocalDate dataUltimaGarantia) {
+        return repository.findAllByCustomerId(customerId).stream()
+                .filter(e -> e.getSerial() != null && e.getSerial().equalsIgnoreCase(serial))
+                .filter(e -> e.getDataUltimaGarantia() != null && e.getDataUltimaGarantia().equals(dataUltimaGarantia))
+                .filter(e -> e.getModel() != null
+                        && e.getModel().getType() != null
+                        && e.getModel().getType().getNome().equals(produto))
+                .findFirst()
+                .orElse(null);
     }
+
 }

@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EProductLine;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,5 +19,6 @@ public class EquipmentType {
     private Long id;
 
     @Column(name = "nome", nullable = false, length = 100)
-    private String nome;
+    @Enumerated(EnumType.STRING)
+    private EProductLine nome;
 }

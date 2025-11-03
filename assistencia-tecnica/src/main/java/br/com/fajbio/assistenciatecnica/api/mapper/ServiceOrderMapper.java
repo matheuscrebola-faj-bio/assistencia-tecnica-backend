@@ -21,8 +21,10 @@ public class ServiceOrderMapper {
     private final EquipmentMapper equipmentMapper;
 
     public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment, Short ultimoValor) {
+        ultimoValor++;
         return ServiceOrder.builder()
                 .atendimento(criarAtentimento(ultimoValor).toString())
+                .ultimoValor(ultimoValor)
                 .customerId(customer.getId())
                 .customer(customer)
                 .equipmentId(equipment.getId())

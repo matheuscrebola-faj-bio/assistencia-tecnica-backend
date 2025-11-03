@@ -87,6 +87,18 @@ public class ServiceOrderService {
     public List<ServiceOrder> encontrarPeloStatusAtual(ESoStatus eSoStatus) {
         return repository.findByCurrentStatus(eSoStatus);
     }
+
+    private LocalDateTime getInicioMesAtual() {
+        return LocalDate.now().withDayOfMonth(1).atStartOfDay();
+    }
+
+    private LocalDateTime getInicioProximoMes() {
+        return getInicioMesAtual().plusMonths(1);
+    }
+
+    public Short encontrarUltimoValor() {
+        return repository.findMaxUltimoValorNoMes(getInicioMesAtual(), getInicioProximoMes());
+    }
 //
 //    @Transactional
 //    public void atualizarCamposDoAtendimento(Long serviceOrderId, ServiceOrderUpdateReq req) {
