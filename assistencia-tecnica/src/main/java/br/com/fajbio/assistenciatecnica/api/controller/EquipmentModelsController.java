@@ -44,7 +44,7 @@ public class EquipmentModelsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{equipmentId}")
     public ResponseEntity<EquipmentModelRes> getEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/equipment-models/id"));
         // detalhe do modelo.
@@ -52,7 +52,7 @@ public class EquipmentModelsController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{equipmentId}")
     public ResponseEntity<?> updateEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId, @RequestBody EquipmentModelReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/equipment-models/id"));
         // atualiza modelo.
@@ -60,7 +60,7 @@ public class EquipmentModelsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{equipmentId}")
     public ResponseEntity<?> deleteEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/equipment-models/id"));
         // remove modelo.

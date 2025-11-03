@@ -48,21 +48,21 @@ public class UsersController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserRes> getUserById(@RequestHeader Long reqId, @PathVariable Long userId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "GET", "/users/id"));
         UserRes res = userMapper.mappear(userService.encontrarPeloId(userId));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{userId}")
     public ResponseEntity<?> updateUser(@RequestHeader Long reqId, @PathVariable Long userId, @RequestBody UserUpdate update){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "PUT", "/users/id"));
         userService.atualizar(userId, update);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@RequestHeader Long reqId, @PathVariable Long userId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id"));
         // desativa/Remove usuário (soft/hard, conforme regra).
@@ -70,7 +70,7 @@ public class UsersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/roles/{roleId}")
+    @PostMapping("/{userId}/roles/{roleId}")
     public ResponseEntity<?> addRoleToUser(@RequestHeader Long reqId, @PathVariable Long userId, @PathVariable Long roleId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "POST", "/users/id/roles/ID"));
         // vincula perfil ao usuário.
@@ -88,7 +88,7 @@ public class UsersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/roles/{roleId}")
+    @DeleteMapping("/{userId}/roles/{roleId}")
     public ResponseEntity<?> removeRoleFromUser(@RequestHeader Long reqId, @PathVariable Long userId, @PathVariable Long roleId){
         accessLogService.registrar(accessLogMapper.mappear(reqId, "DELETE", "/users/id/roles/id"));
         // remove perfil do usuário.

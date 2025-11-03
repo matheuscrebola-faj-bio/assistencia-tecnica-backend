@@ -8,10 +8,7 @@ import br.com.fajbio.assistenciatecnica.domain.service.SoStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +21,8 @@ public class SoStatusController {
     private final SoStatusMapper soStatusMapper;
     private final SoStatusService soStatusService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<SoStatusRes>> listSoStatus(@RequestHeader Long id){
+    @GetMapping
+    public ResponseEntity<List<SoStatusRes>> listSoStatus(@RequestHeader Long id) {
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-order-status/id"));
         //TODO: lista catálogo de status possíveis.
         List<SoStatusRes> res = soStatusMapper.mappear(soStatusService.encontrarTodos());

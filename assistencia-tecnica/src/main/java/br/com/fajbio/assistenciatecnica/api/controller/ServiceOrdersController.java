@@ -114,7 +114,7 @@ public class ServiceOrdersController {
 //        return new ResponseEntity<>(HttpStatus.CREATED);
 //    }
 //
-    @GetMapping("/{id}")
+    @GetMapping("/{serviceOrderId}")
     public ResponseEntity<ServiceOrderRes> getServiceOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id"));
         // detalhe do atendimento (campos principais).
@@ -130,7 +130,7 @@ public class ServiceOrdersController {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{serviceOrderId}")
     public ResponseEntity<?> deleteServiceOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/service-orders/id"));
         // cancela/Remove (conforme regra de negócio).
@@ -138,7 +138,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/timeline")
+    @GetMapping("/{serviceOrderId}/timeline")
     public ResponseEntity<List<SoStatusHistoryRes>> getServiceOrderTimeline(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/timeline"));
         // consolida e retorna linha do tempo (histórico de status e eventos).
@@ -146,7 +146,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/assign/{userId}")
+    @PostMapping("/{serviceOrderId}/assign/{userId}")
     public ResponseEntity<?> assignServiceOrder(@RequestHeader Long id, @PathVariable Long serviceOrderId, @PathVariable Long userId){
         accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/assign/id"));
         // atribui técnico e atualiza status conforme regra.
@@ -158,7 +158,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/status")
+    @PostMapping("/{serviceOrderId}/status/{userId}")
     public ResponseEntity<?> changeStatus(@RequestHeader Long id, @PathVariable Long serviceOrderId, @PathVariable Long userId, @RequestBody StatusReq req){
         accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/status"));
         // valida transição, grava histórico e atualiza status atual.
@@ -170,7 +170,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/intake")
+    @GetMapping("/{serviceOrderId}/intake")
     public ResponseEntity<SoIntakeRes> getIntake(@RequestHeader Long id, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/intake"));
         // retorna dados de recebimento (data, lacre, observações).
@@ -178,7 +178,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/intake")
+    @PostMapping("/{serviceOrderId}/intake")
     public ResponseEntity<?> createIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody SoIntakeReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/intake"));
         // registra chegada; muda status para triagem; pode notificar administrativo.
@@ -191,7 +191,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/intake/{intakeId}")
+    @PutMapping("/{serviceOrderId}/intake/{intakeId}")
     public ResponseEntity<?> updateIntake(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long intakeId, @RequestBody SoIntakeReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/service-orders/id/intake/id"));
         // atualiza registro de recebimento.
@@ -199,7 +199,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/initial-tests")
+    @GetMapping("/{serviceOrderId}/initial-tests")
     public ResponseEntity<?> listInitialTests(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/initial-tests"));
         // lista testes iniciais do atendimento.
@@ -208,7 +208,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/initial-tests")
+    @PostMapping("/{serviceOrderId}/initial-tests")
     public ResponseEntity<?> createInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody InitialTestReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/initial-tests"));
         // cria teste inicial (tecn. responsável, período, resultado).
@@ -217,7 +217,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/initial-tests/{testId}")
+    @GetMapping("/{serviceOrderId}/initial-tests/{testId}")
     public ResponseEntity<InitialTestRes> getInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/initial-tests/id"));
         // detalhe do teste.
@@ -225,7 +225,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/initial-tests/{testId}")
+    @PutMapping("/{serviceOrderId}/initial-tests/{testId}")
     public ResponseEntity<?> updateInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long testId, @RequestBody InitialTestReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/service-orders/id/initial-tests/id"));
         // atualiza teste.
@@ -233,7 +233,7 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/initial-tests/{testId}")
+    @DeleteMapping("/{serviceOrderId}/initial-tests/{testId}")
     public ResponseEntity<?> deleteInitialTest(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @PathVariable Long testId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/service-orders/id/initial-tests/id"));
         // remove teste.
@@ -297,7 +297,7 @@ public class ServiceOrdersController {
 //        return null;
 //    }
 //
-    @PostMapping("/{id}/quotes")
+    @PostMapping("/{serviceOrderId}/quotes")
     public ResponseEntity<?> createQuote(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody QuoteReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/quotes"));
         //TODO: cria orçamento (itens, totais) e mantém como rascunho.
@@ -314,14 +314,14 @@ public class ServiceOrdersController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/work-orders")
+    @GetMapping("/{serviceOrderId}/work-orders")
     public ResponseEntity<List<WorkOrderRes>> listWorkOrders(@RequestHeader Long userId, @PathVariable Long serviceOrderId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders/id/work-orders"));
         List<WorkOrderRes> res = workOrderMapper.mappear(serviceOrderService.encontrarWorkOrders(serviceOrderId));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/work-orders")
+    @PostMapping("/{serviceOrderId}/work-orders")
     public ResponseEntity<?> createWorkOrder(@RequestHeader Long userId, @PathVariable Long serviceOrderId, @RequestBody WorkOrderReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "POST", "/service-orders/id/work-orders"));
         //TODO: cria ordem de trabalho (início do reparo).

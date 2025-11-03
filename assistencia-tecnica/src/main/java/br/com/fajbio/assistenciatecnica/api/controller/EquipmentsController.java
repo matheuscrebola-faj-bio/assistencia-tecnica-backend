@@ -47,7 +47,7 @@ public class EquipmentsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{equipmentId}")
     public ResponseEntity<EquipmentRes> getEquipment(@RequestHeader Long id, @PathVariable Long equipmentId){
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/calibrations/id"));
         // detalhe do equipamento.
@@ -62,7 +62,7 @@ public class EquipmentsController {
 //        return null;
 //    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{equipmentId}")
     public ResponseEntity<?> deleteEquipment(@RequestHeader Long id, @PathVariable Long equipmentId){
         accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/calibrations/id"));
         //TODO: remove/inativa equipamento.

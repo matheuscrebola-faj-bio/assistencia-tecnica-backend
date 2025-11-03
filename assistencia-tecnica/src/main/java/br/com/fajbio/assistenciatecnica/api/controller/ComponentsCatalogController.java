@@ -38,7 +38,7 @@ public class ComponentsCatalogController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{componentId}")
     public ResponseEntity<ComponentRes> getComponent(@RequestHeader Long userId, @PathVariable Long componentId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/components/id"));
         // detalhe do componente.
@@ -46,7 +46,7 @@ public class ComponentsCatalogController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{componentId}")
     public ResponseEntity<?> updateComponent(@RequestHeader Long userId, @PathVariable Long componentId, @RequestBody ComponentReq req){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/components/id"));
         // atualiza componente.
@@ -54,7 +54,7 @@ public class ComponentsCatalogController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{componentId}")
     public ResponseEntity<?> deleteComponent(@RequestHeader Long userId, @PathVariable Long componentId){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/components/id"));
         // remove componente.
