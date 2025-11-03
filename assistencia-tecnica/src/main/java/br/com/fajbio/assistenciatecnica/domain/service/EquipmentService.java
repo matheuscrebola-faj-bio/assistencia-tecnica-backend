@@ -10,15 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class EquipmentService {
     private final EquipmentRepository repository;
-
-    public Equipment encontrarPeloCustomerId(Long id) {
-        return repository.findByCustomerId(id);
-    }
 
     public List<Equipment> encontrarTodos() {
         return repository.findAll();
@@ -49,7 +46,7 @@ public class EquipmentService {
     }
 
     public Equipment encontrarEquipamento(Long customerId, EProductLine produto, String serial, LocalDate dataUltimaGarantia) {
-        return repository.findAllByCustomerId(customerId).stream()
+        return repository.findByCustomerId(customerId).stream()
                 .filter(e -> e.getSerial() != null && e.getSerial().equalsIgnoreCase(serial))
                 .filter(e -> e.getDataUltimaGarantia() != null && e.getDataUltimaGarantia().equals(dataUltimaGarantia))
                 .filter(e -> e.getModel() != null

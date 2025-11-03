@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/service-orders")
@@ -62,7 +63,7 @@ public class ServiceOrdersController {
     @PostMapping
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         Customer customer = customerService.encontrarPeloDocumento(req.cnpj());
-        Equipment equipment = equipmentService.encontrarEquipamento(customer.getId(), req.produto(), req.serial(), req.ultimaCalibracao());
+        Equipment equipment = equipmentService.encontrarEquipamento(customer.getId(), req.produto(), req.serial(), req.calibracao());
         var ultimoValor = serviceOrderService.encontrarUltimoValor();
         serviceOrderService.cadastrar(serviceOrderMapper.mappear(req, customer, equipment, ultimoValor));
         return new ResponseEntity<>(HttpStatus.CREATED);

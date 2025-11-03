@@ -129,7 +129,7 @@ public class DocTemplateFillService {
         m.put("LOTE", nvl(req.serial()));
 
         // Última calibração (vou cobrir 2 chaves possíveis)
-        String dataUltCal = req.ultimaCalibracao() == null ? "" : BR_DATE.format(req.ultimaCalibracao());
+        String dataUltCal = req.calibracao() == null ? "" : BR_DATE.format(req.calibracao());
         m.put("DATA_ULTIMA_CALIBRACAO", dataUltCal);
         m.put("ULTIMA_CALIBRACAO", dataUltCal);
 

@@ -14,7 +14,7 @@ public record ServiceOrderReq (
         String endereco,
         EProductLine produto,
         String serial,
-        LocalDate ultimaCalibracao,
+        LocalDate calibracao,
         String descricao
         ){
 

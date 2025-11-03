@@ -8,9 +8,6 @@ import java.util.List;
 
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
-    Equipment findByCustomerId(Long id);
+    List<Equipment> findByCustomerId(Long id);
 
-    Equipment findBySerial(String serial);
-
-    List<Equipment> findAllByCustomerId(Long id);
 }
