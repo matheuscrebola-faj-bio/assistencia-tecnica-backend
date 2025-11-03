@@ -63,7 +63,6 @@ public class ServiceOrdersController {
     public ResponseEntity<?> createServiceOrder(@RequestBody ServiceOrderReq req){
         var customer = customerService.encontrarPeloDocumento(req.cnpj());
         var equipment = equipmentService.encontrarPeloCustomerId(customer.getId());
-
         // passe uma função para criar o atendimento a partir do valor incremental:
         ServiceOrder so = serviceOrderService.cadastrarNovaOrdem(
                 req, customer, equipment,

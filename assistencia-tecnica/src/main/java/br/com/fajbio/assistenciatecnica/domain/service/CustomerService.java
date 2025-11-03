@@ -1,6 +1,5 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
-import br.com.fajbio.assistenciatecnica.api.dto.AddressReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerAddressReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerContactReq;
 import br.com.fajbio.assistenciatecnica.api.dto.CustomerUpdate;
