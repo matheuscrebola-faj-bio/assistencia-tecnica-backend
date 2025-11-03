@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.mapper;
 
+import br.com.fajbio.assistenciatecnica.api.dto.SoDocumentRes;
 import br.com.fajbio.assistenciatecnica.domain.enums.ETipoDoc;
 import br.com.fajbio.assistenciatecnica.domain.model.ServiceOrder;
 import br.com.fajbio.assistenciatecnica.domain.model.SoDocument;
@@ -44,6 +45,16 @@ public class SoDocumentMapper {
                                 .ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .filePath(path.toString())
                 .criadoEm(LocalDateTime.now())
+                .build();
+    }
+
+    public SoDocumentRes mappear(SoDocument soDocument) {
+        return SoDocumentRes.builder()
+                .id(soDocument.getId())
+                .tipoDoc(soDocument.getTipoDoc())
+                .nome(soDocument.getNome())
+                .filePath(soDocument.getFilePath())
+                .criadoEm(soDocument.getCriadoEm())
                 .build();
     }
 }

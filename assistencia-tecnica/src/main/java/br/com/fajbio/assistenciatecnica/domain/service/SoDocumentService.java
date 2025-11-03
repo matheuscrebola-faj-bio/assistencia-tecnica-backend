@@ -19,4 +19,13 @@ public class SoDocumentService {
     public SoDocument cadastrar(SoDocument document) {
         return salvar(document);
     }
+
+    public SoDocument encontrarPeloId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        repository.deleteById(id);
+    }
 }
