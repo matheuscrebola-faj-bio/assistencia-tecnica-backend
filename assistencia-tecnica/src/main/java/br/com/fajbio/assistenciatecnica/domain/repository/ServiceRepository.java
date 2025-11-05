@@ -12,4 +12,6 @@ import java.util.List;
 public interface ServiceRepository extends JpaRepository<Service,Long> {
 
     List<Service> findAllByNome(String nome);
+
+    Service findByNome(String nome);
 }

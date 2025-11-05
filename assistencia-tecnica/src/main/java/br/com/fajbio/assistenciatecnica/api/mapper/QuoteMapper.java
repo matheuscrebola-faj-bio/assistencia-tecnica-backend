@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.QuoteItemReq;
 import br.com.fajbio.assistenciatecnica.api.dto.QuoteReq;
+import br.com.fajbio.assistenciatecnica.api.dto.QuoteRes;
 import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteEvent;
 import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.*;
@@ -77,6 +78,16 @@ public class QuoteMapper {
                 .userId(quote.getCreatedByUserId())
                 .user(quote.getCreatedBy())
                 .dataHora(LocalDateTime.now())
+                .build();
+    }
+
+    public QuoteRes mappear(Quote quote) {
+        return QuoteRes.builder()
+                .id(quote.getId())
+                .status(quote.getStatus())
+                .validade(quote.getValidade())
+                .revision(quote.getRevision())
+                .criadoEm(quote.getCriadoEm())
                 .build();
     }
 }

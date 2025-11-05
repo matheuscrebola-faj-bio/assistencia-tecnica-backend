@@ -1,8 +1,18 @@
 package br.com.fajbio.assistenciatecnica.api.controller;
 
+import br.com.fajbio.assistenciatecnica.api.dto.QuoteRes;
+import br.com.fajbio.assistenciatecnica.api.dto.QuoteUpdateReq;
 import br.com.fajbio.assistenciatecnica.api.mapper.AccessLogMapper;
-import br.com.fajbio.assistenciatecnica.domain.service.AccessLogService;
+import br.com.fajbio.assistenciatecnica.api.mapper.QuoteEventMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.QuoteItemMapper;
+import br.com.fajbio.assistenciatecnica.api.mapper.QuoteMapper;
+import br.com.fajbio.assistenciatecnica.domain.model.Quote;
+import br.com.fajbio.assistenciatecnica.domain.model.QuoteEvent;
+import br.com.fajbio.assistenciatecnica.domain.model.QuoteItem;
+import br.com.fajbio.assistenciatecnica.domain.model.Service;
+import br.com.fajbio.assistenciatecnica.domain.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,35 +22,60 @@ import org.springframework.web.bind.annotation.*;
 public class QuotesController {
     private final AccessLogService accessLogService;
     private final AccessLogMapper accessLogMapper;
+    private final QuoteMapper quoteMapper;
+    private final QuoteService quoteService;
+    private final QuoteItemMapper quoteItemMapper;
+    private final QuoteItemService quoteItemService;
+    private final QuoteEventMapper quoteEventMapper;
+    private final QuoteEventService quoteEventService;
+    private final ServiceService serviceService;
 
-//    @GetMapping("/{quoteId}")
-//    public ResponseEntity<?> getQuote(@RequestHeader Long id){
+    @GetMapping("/{quoteId}")
+    public ResponseEntity<QuoteRes> getQuote(
+//            @RequestHeader Long id,
+            @PathVariable Long quoteId
+            ){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/quotes/id"));
-//        //TODO: detalhe do orçamento (itens/eventos).
-//        return null;
-//    }
-//
-//    @PutMapping("/{quoteId}")
-//    public ResponseEntity<?> updateQuote(@RequestHeader Long id){
+        // detalhe do orçamento (itens/eventos).
+        QuoteRes res = quoteMapper.mappear(quoteService.encontrarPeloId(quoteId));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PutMapping("/{quoteId}")
+    public ResponseEntity<?> updateQuote(
+//            @RequestHeader Long id,
+            @PathVariable Long quoteId,
+            @RequestBody QuoteUpdateReq req
+            ){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "PUT", "/quotes/id"));
-//        //TODO: atualiza orçamento (itens, validade).
-//        return null;
-//    }
-//
-//    @DeleteMapping("/{quoteId}")
-//    public ResponseEntity<?> deleteQuote(@RequestHeader Long id){
+        // atualiza orçamento (itens, validade).
+        Quote quote = quoteService.encontrarPeloId(quoteId);
+        Service service = serviceService.encontrarPeloNome(req.item().serviceName());
+        QuoteItem item = quoteItemService.cadastrar(quoteItemMapper.mappear(req.item(), quote, service));
+        QuoteEvent event = quoteEventService.cadastrar(quoteEventMapper.mappear(quote, req.event().tipo()));
+        quoteService.atualizar(quoteId, item, event);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{quoteId}")
+    public ResponseEntity<?> deleteQuote(
+//            @RequestHeader Long id,
+            @PathVariable Long quoteId
+            ){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "DELETE", "/quotes/id"));
-//        //TODO: exclui orçamento.
-//        return null;
-//    }
-//
-//    @PostMapping("/{quoteId}/send")
-//    public ResponseEntity<?> sendQuote(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/quotes/id/send"));
-//        //TODO: valida orçamento, gera PDF, envia por email ao cliente, muda OS para “aguardando_aprovacao” e registra evento.
-//        return null;
-//    }
-//
+        // exclui orçamento.
+        quoteService.deletar(quoteId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{quoteId}/send")
+    public ResponseEntity<?> sendQuote(@RequestHeader Long id){
+        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/quotes/id/send"));
+        //TODO: valida orçamento, gera PDF, envia por email ao cliente, muda OS para “aguardando_aprovacao” e registra evento.
+
+        return null;
+    }
+
 //    @PostMapping("/{quoteId}/approve")
 //    public ResponseEntity<?> approveQuote(@RequestHeader Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/quotes/id/approve"));

@@ -41,4 +41,8 @@ public class ServiceService {
     public void deletar(Long serviceId) {
         repository.deleteById(serviceId);
     }
+
+    public br.com.fajbio.assistenciatecnica.domain.model.Service encontrarPeloNome(String nome) {
+        return repository.findByNome(nome);
+    }
 }

@@ -1,6 +1,7 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
 import br.com.fajbio.assistenciatecnica.domain.model.Quote;
+import br.com.fajbio.assistenciatecnica.domain.model.QuoteEvent;
 import br.com.fajbio.assistenciatecnica.domain.model.QuoteItem;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteItemRepository;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteRepository;
@@ -37,5 +38,21 @@ public class QuoteService {
     @Transactional
     public void adicionarItems(List<QuoteItem> quoteItens, Quote quote) {
         quote.getItems().addAll(quoteItens);
+    }
+
+    public Quote encontrarPeloId(Long id) {
+        return quoteRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void atualizar(Long quoteId, QuoteItem item, QuoteEvent event) {
+        var quote = encontrarPeloId(quoteId);
+        quote.getItems().add(item);
+        quote.getEvents().add(event);
+    }
+
+    @Transactional
+    public void deletar(Long quoteId) {
+        quoteRepository.deleteById(quoteId);
     }
 }
