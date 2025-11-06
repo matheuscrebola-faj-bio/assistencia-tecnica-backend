@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_equipments", schema = "assistencia_tecnica", indexes = {
@@ -35,6 +36,9 @@ public class Equipment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id", insertable = false, updatable = false)
     private EquipmentModel model;
+
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EquipmentComponent> components;
 
     @Column(name = "serial", unique = true, length = 100)
     private String serial;

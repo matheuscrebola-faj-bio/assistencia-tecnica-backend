@@ -43,4 +43,8 @@ public class ComponentService {
     public void delecaoLogica(Long componentId) {
         repository.deleteById(componentId);
     }
+
+    public Component encontrarPelaPeca(String peca) {
+        return repository.findByPeca(peca);
+    }
 }

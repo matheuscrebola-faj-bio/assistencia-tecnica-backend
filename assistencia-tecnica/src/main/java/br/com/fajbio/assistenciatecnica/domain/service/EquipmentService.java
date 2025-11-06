@@ -3,6 +3,7 @@ package br.com.fajbio.assistenciatecnica.domain.service;
 import br.com.fajbio.assistenciatecnica.api.dto.EquipmentUpdateReq;
 import br.com.fajbio.assistenciatecnica.domain.enums.EProductLine;
 import br.com.fajbio.assistenciatecnica.domain.model.Equipment;
+import br.com.fajbio.assistenciatecnica.domain.model.EquipmentComponent;
 import br.com.fajbio.assistenciatecnica.domain.repository.EquipmentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,8 @@ public class EquipmentService {
     @Transactional
     public void atualizar(Long equipmentId, EquipmentUpdateReq req) {
         var equipament = encontrarPeloId(equipmentId);
-        //equipament.set;
+        equipament.setSerial(req.serial());
+        equipament.setDataUltimaGarantia(req.dataUltimaGarantia());
     }
 
     @Transactional
@@ -56,4 +58,9 @@ public class EquipmentService {
                 .orElse(null);
     }
 
+    @Transactional
+    public void atualizar(Long equipmentId, EquipmentComponent component) {
+        var equipament = encontrarPeloId(equipmentId);
+        equipament.getComponents().add(component);
+    }
 }
