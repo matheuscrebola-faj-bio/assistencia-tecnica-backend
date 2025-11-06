@@ -99,6 +99,12 @@ public class ServiceOrderService {
     public Short encontrarUltimoValor() {
         return repository.findMaxUltimoValorNoMes(getInicioMesAtual(), getInicioProximoMes());
     }
+
+    @Transactional
+    public void atualizar(Long serviceOrderId, SoStatusHistory statusHistory) {
+        var service = encontrarPeloId(serviceOrderId);
+        service.getStatusHistory().add(statusHistory);
+    }
 //
 //    @Transactional
 //    public void atualizarCamposDoAtendimento(Long serviceOrderId, ServiceOrderUpdateReq req) {

@@ -40,5 +40,5 @@ mail:
   from: ${MAIL_FROM:biotecnica@fajbio.com.br}
 
 server:
-  port: ${PORTA_API:8080}
+  port: ${PORTA_API:8081}
 

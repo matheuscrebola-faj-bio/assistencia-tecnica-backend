@@ -1,8 +1,10 @@
 package br.com.fajbio.assistenciatecnica.domain.service;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.Quote;
 import br.com.fajbio.assistenciatecnica.domain.model.QuoteEvent;
 import br.com.fajbio.assistenciatecnica.domain.model.QuoteItem;
+import br.com.fajbio.assistenciatecnica.domain.model.User;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteItemRepository;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteRepository;
 import jakarta.transaction.Transactional;
@@ -53,6 +55,21 @@ public class QuoteService {
 
     @Transactional
     public void deletar(Long quoteId) {
-        quoteRepository.deleteById(quoteId);
+        var quote = encontrarPeloId(quoteId);
+        quote.setStatus(EQuoteStatus.ENCERRADA);
+    }
+
+    @Transactional
+    public Quote atualizar(Long quoteId, QuoteEvent quoteEvent) {
+        var quote = encontrarPeloId(quoteId);
+        quote.getEvents().add(quoteEvent);
+        quote.setStatus(EQuoteStatus.APROVADA);
+        return quote;
+    }
+
+    @Transactional
+    public void atualizar(Long quoteId, QuoteItem quoteItem) {
+        var quote = encontrarPeloId(quoteId);
+        quote.getItems().add(quoteItem);
     }
 }
