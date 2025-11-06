@@ -22,7 +22,9 @@ public class SoStatusController {
     private final SoStatusService soStatusService;
 
     @GetMapping
-    public ResponseEntity<List<SoStatusRes>> listSoStatus(@RequestHeader Long id) {
+    public ResponseEntity<List<SoStatusRes>> listSoStatus(
+            @RequestHeader Long id
+        ) {
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-order-status/id"));
         //TODO: lista catálogo de status possíveis.
         List<SoStatusRes> res = soStatusMapper.mappear(soStatusService.encontrarTodos());

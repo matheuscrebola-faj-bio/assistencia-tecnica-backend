@@ -105,6 +105,7 @@ public class ServiceOrderService {
         var service = encontrarPeloId(serviceOrderId);
         service.getStatusHistory().add(statusHistory);
     }
+
 //
 //    @Transactional
 //    public void atualizarCamposDoAtendimento(Long serviceOrderId, ServiceOrderUpdateReq req) {

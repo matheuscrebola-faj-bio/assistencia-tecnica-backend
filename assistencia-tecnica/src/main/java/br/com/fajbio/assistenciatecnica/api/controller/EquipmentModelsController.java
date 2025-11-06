@@ -28,7 +28,9 @@ public class EquipmentModelsController {
     private final EquipmentTypeService equipmentTypeService;
 
     @GetMapping
-    public ResponseEntity<List<EquipmentModelRes>> listEquipmentModels(@RequestHeader Long id){
+    public ResponseEntity<List<EquipmentModelRes>> listEquipmentModels(
+            @RequestHeader Long id
+        ){
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/equipment-models"));
         // lista modelos (com filtro por tipo).
         List<EquipmentModelRes> res = equipmentModelMapper.mappear(equipmentModelService.encontrarTodos());
@@ -36,7 +38,10 @@ public class EquipmentModelsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEquipmentModel(@RequestHeader Long id, @RequestBody EquipmentModelReq req){
+    public ResponseEntity<?> createEquipmentModel(
+            @RequestHeader Long id,
+            @RequestBody EquipmentModelReq req
+        ){
         accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/equipment-models"));
         // cria modelo.
         EquipmentType type = equipmentTypeService.cadastrar(equipmentTypeMapper.mappear(req.equipmentType()));
@@ -45,7 +50,10 @@ public class EquipmentModelsController {
     }
 
     @GetMapping("/{equipmentId}")
-    public ResponseEntity<EquipmentModelRes> getEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId){
+    public ResponseEntity<EquipmentModelRes> getEquipmentModel(
+            @RequestHeader Long userId,
+            @PathVariable Long equipmentId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/equipment-models/id"));
         // detalhe do modelo.
         EquipmentModelRes res = equipmentModelMapper.mappear(equipmentModelService.encontrarPeloId(equipmentId));
@@ -53,7 +61,11 @@ public class EquipmentModelsController {
     }
 
     @PutMapping("/{equipmentId}")
-    public ResponseEntity<?> updateEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId, @RequestBody EquipmentModelReq req){
+    public ResponseEntity<?> updateEquipmentModel(
+            @RequestHeader Long userId,
+            @PathVariable Long equipmentId,
+            @RequestBody EquipmentModelReq req
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/equipment-models/id"));
         // atualiza modelo.
         equipmentModelService.atualizar(equipmentId, req);
@@ -61,7 +73,10 @@ public class EquipmentModelsController {
     }
 
     @DeleteMapping("/{equipmentId}")
-    public ResponseEntity<?> deleteEquipmentModel(@RequestHeader Long userId, @PathVariable Long equipmentId){
+    public ResponseEntity<?> deleteEquipmentModel(
+            @RequestHeader Long userId,
+            @PathVariable Long equipmentId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/equipment-models/id"));
         // remove modelo.
         equipmentModelService.delecao(equipmentId);

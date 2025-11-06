@@ -23,7 +23,9 @@ public class ComponentsCatalogController {
     private final ComponentService componentService;
 
     @GetMapping
-    public ResponseEntity<List<ComponentRes>> listComponents(@RequestHeader Long id){
+    public ResponseEntity<List<ComponentRes>> listComponents(
+            @RequestHeader Long id
+        ){
         accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/components"));
         // lista componentes.
         List<ComponentRes> res = componentMapper.mappear(componentService.encontrarTodos());
@@ -31,7 +33,10 @@ public class ComponentsCatalogController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createComponent(@RequestHeader Long id, @RequestBody ComponentReq req){
+    public ResponseEntity<?> createComponent(
+            @RequestHeader Long id,
+            @RequestBody ComponentReq req
+        ){
         accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/components"));
         // cria componente.
         componentService.cadastrar(componentMapper.mappear(req));
@@ -39,7 +44,10 @@ public class ComponentsCatalogController {
     }
 
     @GetMapping("/{componentId}")
-    public ResponseEntity<ComponentRes> getComponent(@RequestHeader Long userId, @PathVariable Long componentId){
+    public ResponseEntity<ComponentRes> getComponent(
+            @RequestHeader Long userId,
+            @PathVariable Long componentId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/components/id"));
         // detalhe do componente.
         ComponentRes res = componentMapper.mappear(componentService.encontrarPeloId(componentId));
@@ -47,7 +55,11 @@ public class ComponentsCatalogController {
     }
 
     @PutMapping("/{componentId}")
-    public ResponseEntity<?> updateComponent(@RequestHeader Long userId, @PathVariable Long componentId, @RequestBody ComponentReq req){
+    public ResponseEntity<?> updateComponent(
+            @RequestHeader Long userId,
+            @PathVariable Long componentId,
+            @RequestBody ComponentReq req
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/components/id"));
         // atualiza componente.
         componentService.atualizar(componentId, req);
@@ -55,7 +67,10 @@ public class ComponentsCatalogController {
     }
 
     @DeleteMapping("/{componentId}")
-    public ResponseEntity<?> deleteComponent(@RequestHeader Long userId, @PathVariable Long componentId){
+    public ResponseEntity<?> deleteComponent(
+            @RequestHeader Long userId,
+            @PathVariable Long componentId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/components/id"));
         // remove componente.
         componentService.delecaoLogica(componentId);

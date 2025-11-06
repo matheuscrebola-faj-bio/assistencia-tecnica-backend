@@ -18,7 +18,6 @@ public class ChecklistsController {
 //    public ResponseEntity<ChecklistRes> getChecklist(@RequestHeader Long userId, @PathVariable Long id){
 //        accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/checklists/id"));
 //        //TODO: detalhe do checklist (itens e respostas).
-//
 //        return null;
 //    }
 

@@ -31,7 +31,10 @@ public class CalibrationsController {
     private final CalibrationPointMapper calibrationPointMapper;
 
     @GetMapping("/{calibrationId}")
-    public ResponseEntity<CalibrationRes> getCalibration(@RequestHeader Long userId, @RequestParam Long calibrationId){
+    public ResponseEntity<CalibrationRes> getCalibration(
+            @RequestHeader Long userId,
+            @RequestParam Long calibrationId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/calibrations/id"));
         //detalhe da calibração.
         CalibrationRes res = calibrationMapper.mapear(calibrationService.encontrarPeloId(calibrationId));
@@ -39,7 +42,11 @@ public class CalibrationsController {
     }
 
     @PutMapping("/{calibrationId}")
-    public ResponseEntity<?> updateCalibration(@RequestHeader Long userId, @RequestParam Long calibrationId, @RequestBody CalibrationReq req){
+    public ResponseEntity<?> updateCalibration(
+            @RequestHeader Long userId,
+            @RequestParam Long calibrationId,
+            @RequestBody CalibrationReq req
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "PUT", "/calibrations/id"));
         //atualiza calibração (datas/certificado).
         Calibration calibration = calibrationService.encontrarPeloId(calibrationId);
@@ -48,7 +55,10 @@ public class CalibrationsController {
     }
 
     @DeleteMapping("/{calibrationId}")
-    public ResponseEntity<?> deleteCalibration(@RequestHeader Long userId, @RequestParam Long calibrationId){
+    public ResponseEntity<?> deleteCalibration(
+            @RequestHeader Long userId,
+            @RequestParam Long calibrationId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "DELETE", "/calibrations/id"));
         //remove calibração.
         calibrationService.deletarPeloId(calibrationId);
@@ -56,7 +66,10 @@ public class CalibrationsController {
     }
 
     @GetMapping("/{calibrationId}/points")
-    public ResponseEntity<List<CalibrationPointRes>> listCalibrationPoints(@RequestHeader Long userId, @RequestParam Long calibrationId){
+    public ResponseEntity<List<CalibrationPointRes>> listCalibrationPoints(
+            @RequestHeader Long userId,
+            @RequestParam Long calibrationId
+        ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/calibrations/id/points"));
         //lista pontos medidos.
         var res = calibrationService.buscarPontosPorId(calibrationId);
