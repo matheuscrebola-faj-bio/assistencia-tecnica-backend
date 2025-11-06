@@ -1,0 +1,9 @@
+package br.com.fajbio.assistenciatecnica.api.dto;
+
+import java.math.BigDecimal;
+
+public record InvoiceReq(
+        BigDecimal valorTotal,
+        BigDecimal impostos
+) {
+}

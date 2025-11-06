@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EInvoice;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,7 +45,8 @@ public class Invoice {
     private BigDecimal impostos;
 
     @Column(name = "invoice_status", length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EInvoice status;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvoiceItem> items;
