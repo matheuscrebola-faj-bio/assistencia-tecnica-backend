@@ -5,6 +5,9 @@ import br.com.fajbio.assistenciatecnica.api.dto.EquipmentTypeRes;
 import br.com.fajbio.assistenciatecnica.domain.model.EquipmentType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class EquipmentTypeMapper {
 
@@ -19,5 +22,11 @@ public class EquipmentTypeMapper {
         return EquipmentType.builder()
                 .nome(type.nome())
                 .build();
+    }
+
+    public List<EquipmentTypeRes> mappear(List<EquipmentType> equipmentTypes) {
+        return equipmentTypes.stream()
+                .map(this::mappear)
+                .collect(Collectors.toList());
     }
 }
