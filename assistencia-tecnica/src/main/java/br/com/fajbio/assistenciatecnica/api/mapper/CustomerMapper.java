@@ -14,7 +14,6 @@ public class CustomerMapper {
     public CustomerRes mappear(Customer customer) {
         return CustomerRes.builder()
                 .id(customer.getId())
-                .nomeLegal(customer.getNomeLegal())
                 .documento(customer.getDocumento())
                 .build();
     }

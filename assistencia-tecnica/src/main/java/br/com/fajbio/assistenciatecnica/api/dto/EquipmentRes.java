@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Data
 public class EquipmentRes {
     private Long id;
-    private LocalDate dataUltimaGarantia;
-    private EquipmentModelRes model;
+    private LocalDate garantia;
     private String serial;
 }

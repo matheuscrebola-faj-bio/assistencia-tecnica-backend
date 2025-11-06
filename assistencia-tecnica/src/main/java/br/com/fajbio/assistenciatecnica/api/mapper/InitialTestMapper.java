@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class InitialTestMapper {
-    private final UserMapper userMapper;
 
     public InitialTest mappear(ServiceOrder serviceOrder, InitialTestReq req) {
         return InitialTest.builder()
@@ -30,7 +29,6 @@ public class InitialTestMapper {
     public InitialTestRes mappear(InitialTest initialTest) {
         return InitialTestRes.builder()
                 .id(initialTest.getId())
-                .tecnico(userMapper.mappear(initialTest.getTecnico()))
                 .aparelho(initialTest.getAparelho())
                 .criadoEm(initialTest.getCriadoEm())
                 .valores(initialTest.getValores())

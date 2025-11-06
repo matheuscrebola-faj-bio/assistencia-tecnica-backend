@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CustomerRes {
     private Long id;
-    private String nomeLegal;
+    private String nome;
     private String documento;
 }

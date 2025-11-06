@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class ServiceOrderMapper {
-    private final EquipmentMapper equipmentMapper;
 
     public ServiceOrder mappear(ServiceOrderReq req, Customer customer, Equipment equipment, Short ultimoValor) {
         ultimoValor++;
@@ -60,7 +59,6 @@ public class ServiceOrderMapper {
     public ServiceOrderRes mappear(ServiceOrder serviceOrder) {
         return ServiceOrderRes.builder()
                 .id(serviceOrder.getId())
-                .equipment(equipmentMapper.mappear(serviceOrder.getEquipment()))
                 .currentStatus(serviceOrder.getCurrentStatus())
                 .productLine(serviceOrder.getProductLine())
                 .build();

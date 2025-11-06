@@ -14,12 +14,8 @@ public class CalibrationMapper {
     public CalibrationRes mapear(Calibration c) {
         return CalibrationRes.builder()
                 .id(c.getId())
-                .serviceOrder(c.getServiceOrder())
-                .tecnico(c.getTecnico())
                 .data(c.getData())
-                .referenciaCertificado(c.getReferenciaCertificado())
                 .validade(c.getValidade())
-                .points(c.getPoints())
                 .build();
     }
 

@@ -19,7 +19,6 @@ public class CustomerAddressMapper {
     public CustomerAddressRes mappear(CustomerAddress address) {
         return CustomerAddressRes.builder()
                 .id(address.getId())
-                .address(addressMapper.mappear(address.getAddress()))
                 .tipo(address.getTipo())
                 .build();
     }

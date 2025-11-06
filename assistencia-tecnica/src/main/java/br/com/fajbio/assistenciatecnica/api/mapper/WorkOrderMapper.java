@@ -57,7 +57,6 @@ public class WorkOrderMapper {
                 .dataInicio(workOrder.getDataInicio())
                 .dataFim(workOrder.getDataFim())
                 .observacoes(workOrder.getObservacoes())
-                .logs(workLogMapper.mappear(workOrder.getLogs()))
                 .build();
     }
 }

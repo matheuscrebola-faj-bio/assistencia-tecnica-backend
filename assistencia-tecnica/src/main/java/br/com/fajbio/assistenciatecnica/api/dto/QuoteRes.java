@@ -16,6 +16,6 @@ public class QuoteRes {
     private Long id;
     private EQuoteStatus status;
     private LocalDate validade;
-    private Byte revision = 0;
+    private Byte revision;
     private LocalDateTime criadoEm;
 }

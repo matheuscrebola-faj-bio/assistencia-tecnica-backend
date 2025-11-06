@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class ServiceOrderRes {
     private Long id;
-    private EquipmentRes equipment;
     private ESoStatus currentStatus;
     private EProductLine productLine;
 }

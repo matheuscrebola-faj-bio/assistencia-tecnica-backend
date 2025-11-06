@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class EquipmentModelRes {
     private Long id;
-    private EquipmentTypeRes type;
     private String fabricante;
     private String modelo;
 }

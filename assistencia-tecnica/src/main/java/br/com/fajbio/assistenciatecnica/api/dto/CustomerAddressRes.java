@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class CustomerAddressRes {
     private Long id;
-    private AddressRes address;
     private String tipo;
 }

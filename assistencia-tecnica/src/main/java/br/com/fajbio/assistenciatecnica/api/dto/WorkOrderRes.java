@@ -18,5 +18,4 @@ public class WorkOrderRes {
     private LocalDateTime dataInicio;
     private LocalDateTime dataFim;
     private String observacoes;
-    private List<WorkLogRes> logs;
 }

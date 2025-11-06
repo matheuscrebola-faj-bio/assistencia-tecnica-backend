@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Data
 public class InitialTestRes {
     private Long id;
-    private UserRes tecnico;
     private String aparelho;
     private LocalDateTime criadoEm;
     private String valores;
