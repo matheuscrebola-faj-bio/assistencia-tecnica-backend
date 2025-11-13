@@ -102,7 +102,8 @@ public class InvoicesController {
         ServiceOrder serviceOrder = invoice.getServiceOrder();
         List<Quote> quotes = serviceOrder.getQuotes();
         List<QuoteItem> quoteItems = quotes.getLast().getItems();
-        InvoiceItem item = invoiceItemService.cadastrar(invoiceItemMapper.mappear(quoteItems.getLast(),invoice,req));
+        InvoiceItem item = invoiceItemService.cadastrar(
+                invoiceItemMapper.mappear(quoteItems.getLast(),invoice,req));
         invoiceService.atualizar(invoiceId,item);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
