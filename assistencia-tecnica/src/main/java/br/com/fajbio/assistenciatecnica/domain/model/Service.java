@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_services", schema = "assistencia_tecnica", indexes = {
@@ -24,4 +25,7 @@ public class Service {
 
     @Column(name = "preco_base", precision = 10, scale = 2)
     private BigDecimal precoBase;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuoteItem> items;
 }

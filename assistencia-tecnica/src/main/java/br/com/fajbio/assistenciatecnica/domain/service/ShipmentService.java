@@ -18,8 +18,8 @@ public class ShipmentService {
     }
 
     @Transactional
-    public void cadastrar(Shipment shipment) {
-        repository.save(shipment);
+    public Shipment cadastrar(Shipment shipment) {
+        return repository.save(shipment);
     }
 
     @Transactional

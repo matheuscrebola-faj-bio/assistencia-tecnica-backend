@@ -51,6 +51,10 @@ public class ServiceOrdersController {
     private final WorkOrderService workOrderService;
     private final WorkLogMapper workLogMapper;
     private final WorkLogService workLogService;
+    private final ShipmentService shipmentService;
+    private final ShipmentMapper shipmentMapper;
+    private final ShipmentEventService shipmentEventService;
+    private final ShipmentEventMapper shipmentEventMapper;
 
     @GetMapping
     public ResponseEntity<List<ServiceOrderRes>> listServiceOrders(
@@ -425,26 +429,42 @@ public class ServiceOrdersController {
 //    }
 //
 //    @PostMapping("/{id}/invoices")
-//    public ResponseEntity<?> createInvoice(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/invoices"));
+//    public ResponseEntity<?> createInvoice(
+////            @RequestHeader Long id
+//            @PathVariable Long soId
+//        ){
+////        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/invoices"));
 //        //TODO: gera fatura a partir do orçamento aprovado (itens, totais).
+//        var quote = quoteService.encontrarPeloServiceOrderId(soId);
+//        List<QuoteItem> items = quote.getItems();
+//        var service = items.stream().filter();
 //        return null;
 //    }
-//
+
 //    @GetMapping("/{id}/shipments")
-//    public ResponseEntity<?> listShipments(@RequestHeader Long id){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/shipments"));
+//    public ResponseEntity<?> listShipments(
+//            //@RequestHeader Long id
+//            @PathVariable Long soId
+//        ){
+////        accessLogService.registrar(accessLogMapper.mappear(id, "GET", "/service-orders/id/shipments"));
 //        //TODO: lista envios da OS.
 //        return null;
 //    }
-//
-//    @PostMapping("/{id}/shipments")
-//    public ResponseEntity<?> createShipment(@RequestHeader Long id){
+
+    @PostMapping("/{id}/shipments")
+    public ResponseEntity<?> createShipment(
+//            @RequestHeader Long id,
+            @PathVariable Long soId,
+            @RequestBody ShipmentReq req
+            ){
 //        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/service-orders/id/shipments"));
-//        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
-//
-//        return null;
-//    }
+        //TODO: cria envio, grava código de rastreio e dispara notificação ao cliente.
+        var serviceOrder = serviceOrderService.encontrarPeloId(soId);
+        Shipment shipment = shipmentService.cadastrar(shipmentMapper.mappear(req, serviceOrder));
+        ShipmentEvent shipmentEvent = shipmentEventService.cadastrar(shipmentEventMapper.mappear(shipment));
+        shipmentService.atualizar(shipment.getId(), shipmentEvent);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
 //    @GetMapping("/{id}/notifications")
 //    public ResponseEntity<?> listNotifications(@RequestHeader Long id){

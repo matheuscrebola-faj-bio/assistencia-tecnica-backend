@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.api.dto;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EShipmentEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,6 @@ import java.time.LocalDateTime;
 public class ShipmentEventRes {
     private Long id;
     private LocalDateTime dataHora;
-    private String status;
+    private EShipmentEvent status;
     private String localizacao;
 }

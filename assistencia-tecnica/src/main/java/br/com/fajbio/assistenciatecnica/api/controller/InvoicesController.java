@@ -90,22 +90,22 @@ public class InvoicesController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/{invoiceId}/items")
-    public ResponseEntity<?> createInvoiceItem(
-//            @RequestHeader Long id,
-            @PathVariable Long invoiceId,
-            @RequestBody InvoiceItemReq req
-            ){
-//        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/invoices/id/items"));
-        //TODO: adiciona item à fatura.
-        Invoice invoice = invoiceService.encontrarPeloId(invoiceId);
-        ServiceOrder serviceOrder = invoice.getServiceOrder();
-        List<Quote> quotes = serviceOrder.getQuotes();
-        List<QuoteItem> quoteItems = quotes.getLast().getItems();
-        InvoiceItem item = invoiceItemService.cadastrar(invoiceItemMapper.mappear(quoteItems.getLast(),invoice,req));
-        invoiceService.atualizar(invoiceId,item);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+//    @PostMapping("/{invoiceId}/items")
+//    public ResponseEntity<?> createInvoiceItem(
+////            @RequestHeader Long id,
+//            @PathVariable Long invoiceId,
+//            @RequestBody InvoiceItemReq req
+//            ){
+////        accessLogService.registrar(accessLogMapper.mappear(id, "POST", "/invoices/id/items"));
+//        //TODO: adiciona item à fatura.
+//        Invoice invoice = invoiceService.encontrarPeloId(invoiceId);
+//        ServiceOrder serviceOrder = invoice.getServiceOrder();
+//        List<Quote> quotes = serviceOrder.getQuotes();
+//        List<QuoteItem> quoteItems = quotes.getLast().getItems();
+//        InvoiceItem item = invoiceItemService.cadastrar(invoiceItemMapper.mappear(quoteItems.getLast(),invoice,req));
+//        invoiceService.atualizar(invoiceId,item);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
 
     @GetMapping("/{invoiceId}/items/{itemId}")
     public ResponseEntity<InvoiceItemRes> getInvoiceItem(

@@ -2,6 +2,7 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.ShipmentEventReq;
 import br.com.fajbio.assistenciatecnica.api.dto.ShipmentEventRes;
+import br.com.fajbio.assistenciatecnica.domain.enums.EShipmentEvent;
 import br.com.fajbio.assistenciatecnica.domain.model.Shipment;
 import br.com.fajbio.assistenciatecnica.domain.model.ShipmentEvent;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,16 @@ public class ShipmentEventMapper {
                 .dataHora(LocalDateTime.now())
                 .status(req.status())
                 .localizacao(req.localizacao())
+                .build();
+    }
+
+    public ShipmentEvent mappear(Shipment shipment) {
+        return ShipmentEvent.builder()
+                .shipmentId(shipment.getId())
+                .shipment(shipment)
+                .dataHora(LocalDateTime.now())
+                .status(EShipmentEvent.REGISTRADO)
+                .localizacao("FAJ BIO")
                 .build();
     }
 }

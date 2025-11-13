@@ -1,5 +1,6 @@
 package br.com.fajbio.assistenciatecnica.domain.model;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EShipmentEvent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +33,8 @@ public class ShipmentEvent {
     private LocalDateTime dataHora;
 
     @Column(name = "shipment_status", length = 100)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EShipmentEvent status;
 
     @Column(name = "localizacao")
     private String localizacao;

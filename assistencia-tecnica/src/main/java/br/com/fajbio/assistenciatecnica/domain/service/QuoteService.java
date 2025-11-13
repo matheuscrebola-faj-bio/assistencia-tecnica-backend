@@ -4,7 +4,6 @@ import br.com.fajbio.assistenciatecnica.domain.enums.EQuoteStatus;
 import br.com.fajbio.assistenciatecnica.domain.model.Quote;
 import br.com.fajbio.assistenciatecnica.domain.model.QuoteEvent;
 import br.com.fajbio.assistenciatecnica.domain.model.QuoteItem;
-import br.com.fajbio.assistenciatecnica.domain.model.User;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteItemRepository;
 import br.com.fajbio.assistenciatecnica.domain.repository.QuoteRepository;
 import jakarta.transaction.Transactional;
@@ -71,5 +70,9 @@ public class QuoteService {
     public void atualizar(Long quoteId, QuoteItem quoteItem) {
         var quote = encontrarPeloId(quoteId);
         quote.getItems().add(quoteItem);
+    }
+
+    public Quote encontrarPeloServiceOrderId(Long id) {
+        return quoteRepository.findByServiceOrderId(id);
     }
 }

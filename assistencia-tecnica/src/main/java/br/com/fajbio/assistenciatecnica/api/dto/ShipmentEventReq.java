@@ -1,7 +1,9 @@
 package br.com.fajbio.assistenciatecnica.api.dto;
 
+import br.com.fajbio.assistenciatecnica.domain.enums.EShipmentEvent;
+
 public record ShipmentEventReq(
-        String status,
+        EShipmentEvent status,
         String localizacao
 ) {
 }
