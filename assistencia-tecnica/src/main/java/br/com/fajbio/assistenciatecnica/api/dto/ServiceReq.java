@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public record ServiceReq(
         String nome,
-        BigDecimal precoBase
+        BigDecimal preco
 ) {
 }

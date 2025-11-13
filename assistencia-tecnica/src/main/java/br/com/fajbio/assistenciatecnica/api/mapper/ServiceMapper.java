@@ -28,7 +28,7 @@ public class ServiceMapper {
     public Service mappear(ServiceReq req) {
         return Service.builder()
                 .nome(req.nome())
-                .precoBase(req.precoBase())
+                .precoBase(req.preco())
                 .build();
     }
 }

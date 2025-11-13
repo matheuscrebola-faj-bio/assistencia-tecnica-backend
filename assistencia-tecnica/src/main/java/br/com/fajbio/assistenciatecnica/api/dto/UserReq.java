@@ -4,7 +4,7 @@ import java.util.Set;
 
 public record UserReq(
         String username,
-        String passwordHash,
+        String password,
         String email,
         Set<String> roles
 ) {

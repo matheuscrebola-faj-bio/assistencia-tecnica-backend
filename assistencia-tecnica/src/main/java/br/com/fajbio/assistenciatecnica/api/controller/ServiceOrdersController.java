@@ -59,11 +59,11 @@ public class ServiceOrdersController {
     @GetMapping
     public ResponseEntity<List<ServiceOrderRes>> listServiceOrders(
             @RequestHeader Long userId,
-            @RequestBody StatusSoReq req
+            @RequestBody StatusReq req
         ){
         accessLogService.registrar(accessLogMapper.mappear(userId, "GET", "/service-orders"));
         // lista atendimentos com filtros (status, cliente, técnico).
-        List<ServiceOrderRes> res = serviceOrderMapper.mappear(serviceOrderService.encontrarPeloStatusAtual(req.eSoStatus()));
+        List<ServiceOrderRes> res = serviceOrderMapper.mappear(serviceOrderService.encontrarPeloStatusAtual(req.status()));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

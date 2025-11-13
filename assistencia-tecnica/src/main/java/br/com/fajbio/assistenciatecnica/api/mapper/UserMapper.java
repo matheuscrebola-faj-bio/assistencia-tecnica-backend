@@ -2,12 +2,10 @@ package br.com.fajbio.assistenciatecnica.api.mapper;
 
 import br.com.fajbio.assistenciatecnica.api.dto.UserReq;
 import br.com.fajbio.assistenciatecnica.api.dto.UserRes;
-import br.com.fajbio.assistenciatecnica.api.dto.UserUpdate;
 import br.com.fajbio.assistenciatecnica.domain.model.Role;
 import br.com.fajbio.assistenciatecnica.domain.model.User;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class UserMapper {
     public User mappear(UserReq req, Set<Role> roles){
         return User.builder()
                 .username(req.username())
-                .passwordHash(req.passwordHash())
+                .passwordHash(req.password())
                 .email(req.email())
                 .ativo(true)
                 .roles(roles)

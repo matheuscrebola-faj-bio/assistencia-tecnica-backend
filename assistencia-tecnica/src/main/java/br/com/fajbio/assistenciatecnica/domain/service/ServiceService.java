@@ -34,7 +34,7 @@ public class ServiceService {
     public void atualizar(Long serviceId, ServiceReq req) {
         var service = encontrarPeloId(serviceId);
         service.setNome(req.nome());
-        service.setPrecoBase(req.precoBase());
+        service.setPrecoBase(req.preco());
     }
 
     @Transactional
